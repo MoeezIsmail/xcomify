@@ -21,11 +21,13 @@ export default function SplashScreen({ onComplete }) {
     const ctx = canvas.getContext('2d')
     let raf
 
-    // Track dimensions in a ref so the draw loop always reads the latest values
-    // without recreating the particle array on every resize
+    const dpr  = window.devicePixelRatio || 1
     const size = { w: window.innerWidth, h: window.innerHeight }
-    canvas.width  = size.w
-    canvas.height = size.h
+    canvas.width  = size.w * dpr
+    canvas.height = size.h * dpr
+    canvas.style.width  = size.w + 'px'
+    canvas.style.height = size.h + 'px'
+    ctx.scale(dpr, dpr)
 
     const particles = Array.from({ length: 100 }, () => ({
       x: Math.random() * size.w,
@@ -83,11 +85,13 @@ export default function SplashScreen({ onComplete }) {
     draw()
 
     const onResize = () => {
-      size.w        = window.innerWidth
-      size.h        = window.innerHeight
-      canvas.width  = size.w
-      canvas.height = size.h
-      // Clamp particles that are now out-of-bounds
+      size.w = window.innerWidth
+      size.h = window.innerHeight
+      canvas.width  = size.w * dpr
+      canvas.height = size.h * dpr
+      canvas.style.width  = size.w + 'px'
+      canvas.style.height = size.h + 'px'
+      ctx.scale(dpr, dpr)
       particles.forEach(p => {
         if (p.x > size.w) p.x = Math.random() * size.w
         if (p.y > size.h) p.y = Math.random() * size.h
@@ -118,7 +122,7 @@ export default function SplashScreen({ onComplete }) {
     const t1 = setTimeout(() => setShowLogo(true),  350)
     const t2 = setTimeout(() => setShowText(true),   1100)
     const t3 = setTimeout(() => setExiting(true),    2900)
-    const t4 = setTimeout(() => onCompleteRef.current(), 3650)
+    const t4 = setTimeout(() => onCompleteRef.current(), 3900)
 
     return () => {
       cancelAnimationFrame(rafId)
@@ -142,13 +146,49 @@ export default function SplashScreen({ onComplete }) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0A0A0F] overflow-hidden"
-      initial={{ opacity: 1 }}
-      animate={{ opacity: exiting ? 0 : 1 }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0A0A0F]"
+      initial={{ clipPath: 'circle(150% at 50% 50%)' }}
+      animate={{ clipPath: exiting ? 'circle(0% at 50% 50%)' : 'circle(150% at 50% 50%)' }}
+      transition={{ clipPath: { delay: exiting ? 0.3 : 0, duration: 0.62, ease: [0.76, 0, 0.24, 1] } }}
     >
       {/* Particle canvas */}
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+      <motion.div
+        className="absolute inset-0"
+        animate={{ opacity: exiting ? 0 : 1 }}
+        transition={{ duration: 0.25 }}
+      >
+        <canvas ref={canvasRef} className="w-full h-full" />
+      </motion.div>
+
+      {/* X shape — same paths as logo, expands to fill screen on exit before iris closes */}
+      <motion.svg
+        viewBox="0 0 80 80"
+        className="absolute pointer-events-none"
+        style={{
+          width: 80,
+          height: 80,
+          left: 'calc(50% - 40px)',
+          top: 'calc(50% - 40px)',
+          zIndex: 10,
+          overflow: 'visible',
+        }}
+        animate={{ scale: exiting ? 34 : 1, opacity: exiting ? 1 : 0 }}
+        transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
+      >
+        <defs>
+          <linearGradient id="xe1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#00D4FF" />
+            <stop offset="100%" stopColor="#7C3AED" />
+          </linearGradient>
+          <linearGradient id="xe2" x1="100%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#7C3AED" />
+            <stop offset="100%" stopColor="#00D4FF" />
+          </linearGradient>
+        </defs>
+        {/* strokeWidth 52 — at scale 34 this renders ~1400px per arm, covering any viewport */}
+        <path d="M 18 18 L 62 62" stroke="url(#xe1)" strokeWidth="52" strokeLinecap="round" fill="none" />
+        <path d="M 62 18 L 18 62" stroke="url(#xe2)" strokeWidth="52" strokeLinecap="round" fill="none" />
+      </motion.svg>
 
       {/* Ambient glow */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -163,7 +203,11 @@ export default function SplashScreen({ onComplete }) {
       </div>
 
       {/* Center content */}
-      <div className="relative z-10 flex flex-col items-center gap-8">
+      <motion.div
+        className="relative z-10 flex flex-col items-center gap-8"
+        animate={{ opacity: exiting ? 0 : 1, y: exiting ? -12 : 0 }}
+        transition={{ duration: 0.25 }}
+      >
 
         {/* Logo */}
         <AnimatePresence>
@@ -432,7 +476,7 @@ export default function SplashScreen({ onComplete }) {
           {/* Rendered via formatted counter below */}
         </motion.span>
         <ProgressLabel value={progressMV} />
-      </div>
+      </motion.div>
 
       {/* Corner brackets */}
       {[

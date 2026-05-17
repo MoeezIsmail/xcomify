@@ -14,9 +14,15 @@ export default function HeroSection() {
     const ctx = canvas.getContext('2d')
     let raf
 
+    const dpr = window.devicePixelRatio || 1
     const resize = () => {
-      canvas.width = canvas.offsetWidth
-      canvas.height = canvas.offsetHeight
+      const w = canvas.offsetWidth
+      const h = canvas.offsetHeight
+      canvas.width  = w * dpr
+      canvas.height = h * dpr
+      canvas.style.width  = w + 'px'
+      canvas.style.height = h + 'px'
+      ctx.scale(dpr, dpr)
     }
     resize()
     window.addEventListener('resize', resize)
@@ -63,6 +69,18 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0A0A0F]">
+      {/* Morph transition continuation — center glow matching splash gradient, fades as iris opens */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle at 50% 50%, rgba(0,212,255,0.22) 0%, rgba(124,58,237,0.12) 28%, transparent 58%)',
+          zIndex: 50,
+        }}
+        initial={{ opacity: 1 }}
+        animate={{ opacity: 0 }}
+        transition={{ duration: 1.1, ease: 'easeOut' }}
+      />
+
       {/* Particle canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-60" />
 
