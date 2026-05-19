@@ -17,7 +17,7 @@ const initialSettings = {
   youtube: '',
   google_analytics: '',
   facebook_pixel: '',
-  hero_headline: 'Scale Your eCommerce Empire',
+  hero_headline: 'Scale Your e-Commerce Empire',
   hero_subline: 'Full-service eCommerce management across Amazon, eBay, Etsy, Shopify, Walmart & TikTok Shop.',
   cta_text: 'Get Free Consultation',
   maintenance_mode: false,
