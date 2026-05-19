@@ -28,7 +28,7 @@ export default function ServiceCard({ service, index = 0 }) {
   return (
     <motion.div
       ref={cardRef}
-      style={{ rotateX, rotateY, transformStyle: 'preserve-3d', perspective: 1000 }}
+      style={{ rotateX, rotateY, transformStyle: 'preserve-3d', perspective: 1000, backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={handleMouseLeave}
