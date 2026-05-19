@@ -46,9 +46,9 @@ export default function AdminLogin() {
           {/* Logo */}
           <div className="text-center mb-8">
             <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#00D4FF] to-[#7C3AED] flex items-center justify-center mx-auto mb-4 shadow-[0_0_30px_rgba(0,212,255,0.4)]">
-              <span className="text-white font-black text-xl" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>X</span>
+              <span className="text-white font-black text-xl" style={{ fontFamily: 'Syne, sans-serif' }}>X</span>
             </div>
-            <h1 className="text-2xl font-black text-white mb-1" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>Admin Panel</h1>
+            <h1 className="text-2xl font-black text-white mb-1" style={{ fontFamily: 'Syne, sans-serif' }}>Admin Panel</h1>
             <p className="text-white/40 text-sm">Sign in to manage your website</p>
           </div>
 

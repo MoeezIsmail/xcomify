@@ -54,7 +54,7 @@ export default function BlogManager() {
     <div>
       <div className="flex items-center gap-4 mb-6">
         <div>
-          <h1 className="text-xl font-black text-white" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>Blog Manager</h1>
+          <h1 className="text-xl font-black text-white" style={{ fontFamily: 'Syne, sans-serif' }}>Blog Manager</h1>
           <p className="text-white/40 text-xs">{posts.length} posts</p>
         </div>
         <button onClick={openCreate}
@@ -126,7 +126,7 @@ export default function BlogManager() {
               className="w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-white/10 rounded-2xl bg-[#0A0A0F] p-6"
             >
               <div className="flex items-center justify-between mb-5">
-                <h2 className="text-white font-bold text-lg" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+                <h2 className="text-white font-bold text-lg" style={{ fontFamily: 'Syne, sans-serif' }}>
                   {editing === 'new' ? 'New Blog Post' : 'Edit Post'}
                 </h2>
                 <button onClick={() => setEditing(null)} className="text-white/40 hover:text-white"><X size={18} /></button>

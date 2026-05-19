@@ -64,7 +64,7 @@ export default function ApplicationsManager() {
       <div className={`${selected ? 'hidden lg:flex' : 'flex'} flex-col flex-1 min-w-0`}>
         <div className="flex items-center gap-4 mb-6">
           <div>
-            <h1 className="text-xl font-black text-white" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>Applications</h1>
+            <h1 className="text-xl font-black text-white" style={{ fontFamily: 'Syne, sans-serif' }}>Applications</h1>
             <p className="text-white/40 text-xs">{apps.length} total applications</p>
           </div>
           <div className="ml-auto flex gap-2">

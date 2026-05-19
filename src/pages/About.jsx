@@ -30,11 +30,11 @@ export default function About() {
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
             <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">Our Story</span>
-            <h1 className="text-5xl md:text-6xl font-black text-white mb-6" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
               Built by Sellers,{' '}
               <span className="gradient-text">for Sellers</span>
             </h1>
-            <p className="text-white/50 text-lg leading-relaxed max-w-2xl mx-auto">
+            <p className="text-white/50 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto">
               xComify was founded in 2018 by a team of Amazon sellers and eCommerce veterans who were frustrated by agencies that didn't understand how marketplaces actually work. So we built the agency we always wanted.
             </p>
           </motion.div>
@@ -47,14 +47,14 @@ export default function About() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <ScrollReveal direction="left">
               <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">Our Mission</span>
-              <h2 className="text-4xl font-black text-white mb-6" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+              <h2 className="text-4xl md:text-5xl font-black text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
                 Democratizing Access to{' '}
                 <span className="gradient-text">Elite eCommerce Expertise</span>
               </h2>
-              <p className="text-white/50 leading-relaxed mb-6">
+              <p className="text-white/50 text-base md:text-lg leading-relaxed mb-6">
                 We believe every brand deserves access to the same caliber of expertise that Fortune 500 companies have. Our mission is to level the playing field by giving ambitious entrepreneurs and growing businesses the tools, talent, and strategy to compete at the highest level.
               </p>
-              <p className="text-white/50 leading-relaxed mb-8">
+              <p className="text-white/50 text-base md:text-lg leading-relaxed mb-8">
                 Since 2018, we've helped over 500 businesses across 30+ countries generate more than $12M in combined revenue. And we're just getting started.
               </p>
               <Link
@@ -74,7 +74,7 @@ export default function About() {
                   { y: '$12M+', label: 'Revenue Generated' },
                 ].map((s, i) => (
                   <div key={s.label} className="rounded-2xl border border-white/8 p-6 text-center bg-white/2">
-                    <div className="text-3xl font-black text-white mb-1" style={{ fontFamily: 'Cabinet Grotesk, sans-serif', color: i % 2 === 0 ? '#00D4FF' : '#7C3AED' }}>{s.y}</div>
+                    <div className="text-3xl md:text-4xl font-black text-white mb-1" style={{ fontFamily: 'Syne, sans-serif', color: i % 2 === 0 ? '#00D4FF' : '#7C3AED' }}>{s.y}</div>
                     <div className="text-white/40 text-sm">{s.label}</div>
                   </div>
                 ))}
@@ -89,7 +89,7 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-6">
           <ScrollReveal className="text-center mb-16">
             <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">Our Values</span>
-            <h2 className="text-4xl font-black text-white" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+            <h2 className="text-4xl md:text-5xl font-black text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
               What Drives{' '}
               <span className="gradient-text">Everything We Do</span>
             </h2>
@@ -108,7 +108,7 @@ export default function About() {
                   style={{ color: v.color, background: `${v.color}15`, border: `1px solid ${v.color}25` }}>
                   <v.icon size={24} />
                 </div>
-                <h3 className="text-white font-bold mb-2" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>{v.title}</h3>
+                <h3 className="text-white font-bold text-base md:text-lg mb-2" style={{ fontFamily: 'Syne, sans-serif' }}>{v.title}</h3>
                 <p className="text-white/40 text-sm leading-relaxed">{v.description}</p>
               </motion.div>
             ))}
@@ -121,7 +121,7 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-6">
           <ScrollReveal className="text-center mb-16">
             <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">Leadership Team</span>
-            <h2 className="text-4xl font-black text-white" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+            <h2 className="text-4xl md:text-5xl font-black text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
               The People Behind Your{' '}
               <span className="gradient-text">Success</span>
             </h2>
@@ -137,14 +137,14 @@ export default function About() {
                 className="group rounded-2xl border border-white/8 overflow-hidden hover:border-white/15 transition-all duration-300"
               >
                 <div className="h-48 bg-gradient-to-br from-[#00D4FF]/20 to-[#7C3AED]/20 flex items-center justify-center">
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#00D4FF] to-[#7C3AED] flex items-center justify-center text-white font-black text-2xl" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#00D4FF] to-[#7C3AED] flex items-center justify-center text-white font-black text-2xl" style={{ fontFamily: 'Syne, sans-serif' }}>
                     {member.name.split(' ').map(n => n[0]).join('')}
                   </div>
                 </div>
                 <div className="p-5">
-                  <h3 className="text-white font-bold" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>{member.name}</h3>
+                  <h3 className="text-white font-bold text-base md:text-lg" style={{ fontFamily: 'Syne, sans-serif' }}>{member.name}</h3>
                   <p className="text-[#00D4FF] text-sm mb-2">{member.role}</p>
-                  <p className="text-white/40 text-xs leading-relaxed">{member.bio}</p>
+                  <p className="text-white/40 text-sm leading-relaxed">{member.bio}</p>
                 </div>
               </motion.div>
             ))}

@@ -69,11 +69,11 @@ export default function PlatformsSection() {
       <div className="max-w-7xl mx-auto px-6">
         <ScrollReveal className="text-center mb-16">
           <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">Platforms We Dominate</span>
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-4" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+          <h2 className="text-4xl md:text-5xl font-black text-white mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
             One Agency.{' '}
             <span className="gradient-text">Every Platform.</span>
           </h2>
-          <p className="text-white/50 max-w-xl mx-auto">
+          <p className="text-white/50 text-base md:text-lg max-w-xl mx-auto">
             We've built proven systems for every major eCommerce platform. Pick your battlefield — we'll win it for you.
           </p>
         </ScrollReveal>
@@ -143,20 +143,20 @@ export default function PlatformsSection() {
                     </div>
                     <div className="flex gap-6">
                       <div className="text-right">
-                        <div className="text-2xl font-black text-white" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>{active.services}</div>
+                        <div className="text-2xl font-black text-white" style={{ fontFamily: 'Syne, sans-serif' }}>{active.services}</div>
                         <div className="text-xs text-white/40">Services</div>
                       </div>
                       <div className="text-right">
-                        <div className="text-2xl font-black text-white" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>{active.clients}</div>
+                        <div className="text-2xl font-black text-white" style={{ fontFamily: 'Syne, sans-serif' }}>{active.clients}</div>
                         <div className="text-xs text-white/40">Active Clients</div>
                       </div>
                     </div>
                   </div>
 
-                  <h3 className="text-3xl font-black text-white mb-3" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+                  <h3 className="text-3xl md:text-4xl font-black text-white mb-3" style={{ fontFamily: 'Syne, sans-serif' }}>
                     {active.name}
                   </h3>
-                  <p className="text-white/50 leading-relaxed mb-8">{active.description}</p>
+                  <p className="text-white/50 text-base md:text-lg leading-relaxed mb-8">{active.description}</p>
                 </div>
 
                 <div>

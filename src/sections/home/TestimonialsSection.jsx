@@ -35,7 +35,7 @@ export default function TestimonialsSection() {
       <div className="max-w-5xl mx-auto px-6">
         <ScrollReveal className="text-center mb-16">
           <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">Client Stories</span>
-          <h2 className="text-4xl md:text-5xl font-black text-white" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+          <h2 className="text-4xl md:text-5xl font-black text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
             Don't Take{' '}
             <span className="gradient-text">Our Word for It</span>
           </h2>
@@ -66,7 +66,7 @@ export default function TestimonialsSection() {
               </div>
 
               {/* Quote */}
-              <blockquote className="text-xl md:text-2xl text-white font-medium leading-relaxed mb-8" style={{ fontFamily: 'DM Serif Display, serif' }}>
+              <blockquote className="text-xl md:text-2xl text-white font-medium leading-relaxed mb-8" style={{ fontFamily: 'Syne, sans-serif' }}>
                 "{t.content}"
               </blockquote>
 
@@ -77,7 +77,7 @@ export default function TestimonialsSection() {
                     {t.name[0]}
                   </div>
                   <div>
-                    <div className="text-white font-semibold">{t.name}</div>
+                    <div className="text-white font-semibold text-base">{t.name}</div>
                     <div className="text-white/50 text-sm">{t.role}, {t.company}</div>
                   </div>
                 </div>

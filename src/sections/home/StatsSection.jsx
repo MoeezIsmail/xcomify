@@ -19,11 +19,11 @@ export default function StatsSection() {
 
       <div className="max-w-7xl mx-auto px-6">
         <ScrollReveal className="text-center mb-16">
-          <h2 className="text-4xl font-black text-white mb-3" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+          <h2 className="text-4xl md:text-5xl font-black text-white mb-3" style={{ fontFamily: 'Syne, sans-serif' }}>
             Numbers That{' '}
             <span className="gradient-text">Speak for Themselves</span>
           </h2>
-          <p className="text-white/40 text-sm">Real results from real clients. Updated monthly.</p>
+          <p className="text-white/40 text-sm md:text-base">Real results from real clients. Updated monthly.</p>
         </ScrollReveal>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
@@ -41,12 +41,12 @@ export default function StatsSection() {
                 style={{ background: `radial-gradient(circle at 50% 100%, ${stat.color}12 0%, transparent 60%)` }}
               />
               <div
-                className="text-5xl font-black mb-2 tabular-nums"
-                style={{ fontFamily: 'Cabinet Grotesk, sans-serif', color: stat.color }}
+                className="text-5xl md:text-6xl font-black mb-2 tabular-nums"
+                style={{ fontFamily: 'Syne, sans-serif', color: stat.color }}
               >
                 <AnimatedCounter value={stat.value} suffix={stat.suffix} />
               </div>
-              <div className="text-white font-semibold mb-1">{stat.label}</div>
+              <div className="text-white font-semibold text-sm md:text-base mb-1">{stat.label}</div>
               <div className="text-white/40 text-xs">{stat.sub}</div>
 
               {/* Bottom accent */}

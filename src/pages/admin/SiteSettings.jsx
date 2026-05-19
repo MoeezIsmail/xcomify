@@ -84,7 +84,7 @@ export default function SiteSettings() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-black text-white" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>Site Settings</h1>
+          <h1 className="text-xl font-black text-white" style={{ fontFamily: 'Syne, sans-serif' }}>Site Settings</h1>
           <p className="text-white/40 text-xs">Manage your website configuration</p>
         </div>
         <button

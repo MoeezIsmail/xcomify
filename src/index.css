@@ -1,9 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --font-outfit: "Outfit", sans-serif;
-  --font-cabinet: "Cabinet Grotesk", sans-serif;
-  --font-serif: "DM Serif Display", serif;
+  --font-syne: "Syne", sans-serif;
+  --font-dm-sans: "DM Sans", sans-serif;
 
   --color-brand: #00D4FF;
   --color-brand-dark: #0099BB;
@@ -29,7 +28,7 @@ body {
   margin: 0;
   background: #0A0A0F;
   color: #E5E7EB;
-  font-family: "Outfit", sans-serif;
+  font-family: "DM Sans", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;

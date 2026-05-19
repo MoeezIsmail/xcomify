@@ -81,7 +81,7 @@ export default function ServiceCard({ service, index = 0 }) {
       </div>
 
       {/* Title */}
-      <h3 className="text-white font-bold text-lg mb-2 leading-tight" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+      <h3 className="text-white font-bold text-lg mb-2 leading-tight" style={{ fontFamily: 'Syne, sans-serif' }}>
         {service.title}
       </h3>
 

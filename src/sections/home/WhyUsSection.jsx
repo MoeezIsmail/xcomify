@@ -49,11 +49,11 @@ export default function WhyUsSection() {
           {/* Left */}
           <ScrollReveal direction="left">
             <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">Why xComify</span>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-6" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
               Not Just an Agency.{' '}
               <span className="gradient-text">Your Growth Partner.</span>
             </h2>
-            <p className="text-white/50 leading-relaxed mb-8">
+            <p className="text-white/50 text-base md:text-lg leading-relaxed mb-8">
               We don't just manage stores — we build eCommerce empires. Our vertically integrated approach means you get strategy, execution, and optimization under one roof, with experts who eat, sleep, and breathe your platform.
             </p>
 
@@ -66,7 +66,7 @@ export default function WhyUsSection() {
                 { value: '24/7', label: 'Support Coverage' },
               ].map((s) => (
                 <div key={s.label} className="rounded-xl border border-white/8 p-4 bg-white/2">
-                  <div className="text-2xl font-black text-[#00D4FF] mb-1" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>{s.value}</div>
+                  <div className="text-2xl font-black text-[#00D4FF] mb-1" style={{ fontFamily: 'Syne, sans-serif' }}>{s.value}</div>
                   <div className="text-white/50 text-xs">{s.label}</div>
                 </div>
               ))}
@@ -90,8 +90,8 @@ export default function WhyUsSection() {
                 >
                   <reason.icon size={20} />
                 </div>
-                <h3 className="text-white font-bold text-sm mb-1.5">{reason.title}</h3>
-                <p className="text-white/40 text-xs leading-relaxed">{reason.description}</p>
+                <h3 className="text-white font-bold text-sm md:text-base mb-1.5">{reason.title}</h3>
+                <p className="text-white/40 text-xs md:text-sm leading-relaxed">{reason.description}</p>
               </motion.div>
             ))}
           </div>

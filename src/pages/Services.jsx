@@ -11,11 +11,11 @@ export default function Services() {
         <div className="max-w-5xl mx-auto px-6 text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">What We Offer</span>
-            <h1 className="text-5xl md:text-6xl font-black text-white mb-6" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
               Every Service You Need to{' '}
               <span className="gradient-text">Dominate eCommerce</span>
             </h1>
-            <p className="text-white/50 text-lg max-w-2xl mx-auto">
+            <p className="text-white/50 text-lg md:text-xl max-w-2xl mx-auto">
               12 specialized services. Hundreds of success stories. One agency that does it all.
             </p>
           </motion.div>

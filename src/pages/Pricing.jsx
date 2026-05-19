@@ -12,11 +12,11 @@ export default function Pricing() {
         <div className="max-w-4xl mx-auto px-6">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">Simple Pricing</span>
-            <h1 className="text-5xl md:text-6xl font-black text-white mb-6" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
               Transparent Pricing,{' '}
               <span className="gradient-text">Extraordinary Results</span>
             </h1>
-            <p className="text-white/50 text-lg max-w-2xl mx-auto">
+            <p className="text-white/50 text-lg md:text-xl max-w-2xl mx-auto">
               No hidden fees. No long-term lock-ins. Pay for results, not promises. All plans include a 30-day results guarantee.
             </p>
           </motion.div>
@@ -50,18 +50,18 @@ export default function Pricing() {
 
                 <div className={`p-8 flex-1 ${plan.badge ? 'pt-10' : ''}`}>
                   <div className="mb-6">
-                    <h3 className="text-white font-black text-2xl mb-1" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>{plan.name}</h3>
+                    <h3 className="text-white font-black text-2xl mb-1" style={{ fontFamily: 'Syne, sans-serif' }}>{plan.name}</h3>
                     <p className="text-white/40 text-sm">{plan.description}</p>
                   </div>
 
                   <div className="mb-8">
                     {plan.price ? (
                       <div className="flex items-baseline gap-1">
-                        <span className="text-5xl font-black" style={{ fontFamily: 'Cabinet Grotesk, sans-serif', color: plan.color }}>${plan.price}</span>
+                        <span className="text-5xl font-black" style={{ fontFamily: 'Syne, sans-serif', color: plan.color }}>${plan.price}</span>
                         <span className="text-white/40 text-sm">/month</span>
                       </div>
                     ) : (
-                      <div className="text-3xl font-black text-white" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>Custom</div>
+                      <div className="text-3xl font-black text-white" style={{ fontFamily: 'Syne, sans-serif' }}>Custom</div>
                     )}
                   </div>
 
@@ -102,7 +102,7 @@ export default function Pricing() {
 
           <ScrollReveal className="mt-16 text-center">
             <div className="border border-white/8 rounded-2xl p-8 bg-white/2">
-              <h3 className="text-white font-bold text-xl mb-3">Not sure which plan is right for you?</h3>
+              <h3 className="text-white font-bold text-xl md:text-2xl mb-3">Not sure which plan is right for you?</h3>
               <p className="text-white/40 mb-6">Book a free 30-minute strategy call and we'll recommend the perfect plan for your situation.</p>
               <Link to="/contact" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#00D4FF] to-[#7C3AED] text-white font-semibold text-sm hover:shadow-[0_0_30px_rgba(0,212,255,0.3)] transition-shadow">
                 Book Free Consultation <ArrowRight size={16} />

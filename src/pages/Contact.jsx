@@ -41,11 +41,11 @@ export default function Contact() {
         <div className="max-w-4xl mx-auto px-6">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">Get in Touch</span>
-            <h1 className="text-5xl md:text-6xl font-black text-white mb-6" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
               Let's Build Something{' '}
               <span className="gradient-text">Extraordinary</span>
             </h1>
-            <p className="text-white/50 text-lg max-w-xl mx-auto">
+            <p className="text-white/50 text-lg md:text-xl max-w-xl mx-auto">
               Schedule a free strategy call or send us a message. We respond to every inquiry within 24 hours.
             </p>
           </motion.div>
@@ -58,7 +58,7 @@ export default function Contact() {
             {/* Left - info */}
             <div className="lg:col-span-2">
               <ScrollReveal direction="left">
-                <h2 className="text-2xl font-bold text-white mb-6" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>Contact Information</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>Contact Information</h2>
                 <div className="flex flex-col gap-4 mb-8">
                   {contactInfo.map((item) => (
                     <div key={item.label} className="flex items-center gap-4 p-4 rounded-xl border border-white/8 hover:border-white/15 transition-colors bg-white/2">

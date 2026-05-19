@@ -85,11 +85,11 @@ export default function Portfolio() {
         <div className="max-w-5xl mx-auto px-6 text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">Case Studies</span>
-            <h1 className="text-5xl md:text-6xl font-black text-white mb-6" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
               <span className="gradient-text">Real Results</span>{' '}
               from Real Clients
             </h1>
-            <p className="text-white/50 text-lg max-w-2xl mx-auto">
+            <p className="text-white/50 text-lg md:text-xl max-w-2xl mx-auto">
               Not case studies built on cherry-picked data. Real businesses, real challenges, and the exact strategies we used to solve them.
             </p>
           </motion.div>
@@ -143,7 +143,7 @@ export default function Portfolio() {
                       style={{ background: `radial-gradient(circle at 30% 50%, ${cs.color}, transparent 60%)` }}
                     />
                     <div className="text-center relative z-10">
-                      <div className="text-2xl font-black text-white" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>{cs.result.split(' ')[0]}</div>
+                      <div className="text-2xl font-black text-white" style={{ fontFamily: 'Syne, sans-serif' }}>{cs.result.split(' ')[0]}</div>
                       <div className="text-sm text-white/60">{cs.result.split(' ').slice(1).join(' ')}</div>
                     </div>
                     <div className="absolute top-3 right-3 px-2 py-1 rounded-md text-xs font-medium"
@@ -155,7 +155,7 @@ export default function Portfolio() {
 
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-3">
-                      <h3 className="text-white font-bold text-lg" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>{cs.title}</h3>
+                      <h3 className="text-white font-bold text-xl" style={{ fontFamily: 'Syne, sans-serif' }}>{cs.title}</h3>
                       <TrendingUp size={18} style={{ color: cs.color }} />
                     </div>
                     <p className="text-white/40 text-sm mb-4 leading-relaxed">{cs.challenge}</p>

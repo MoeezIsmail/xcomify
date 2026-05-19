@@ -28,11 +28,11 @@ export default function Team() {
         <div className="max-w-4xl mx-auto px-6">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">Meet the Team</span>
-            <h1 className="text-5xl md:text-6xl font-black text-white mb-6" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
               The Experts Behind{' '}
               <span className="gradient-text">Your Growth</span>
             </h1>
-            <p className="text-white/50 text-lg max-w-xl mx-auto">
+            <p className="text-white/50 text-lg md:text-xl max-w-xl mx-auto">
               50+ specialists across every eCommerce discipline. Each one hand-picked for expertise, results, and passion.
             </p>
           </motion.div>
@@ -52,15 +52,15 @@ export default function Team() {
                 className="group border border-white/8 rounded-2xl overflow-hidden hover:border-white/20 hover:bg-white/2 transition-all duration-300"
               >
                 <div className="h-52 bg-gradient-to-br from-[#00D4FF]/15 to-[#7C3AED]/15 flex items-center justify-center relative overflow-hidden">
-                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#00D4FF] to-[#7C3AED] flex items-center justify-center text-white font-black text-3xl shadow-[0_0_30px_rgba(0,212,255,0.3)]" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#00D4FF] to-[#7C3AED] flex items-center justify-center text-white font-black text-3xl shadow-[0_0_30px_rgba(0,212,255,0.3)]" style={{ fontFamily: 'Syne, sans-serif' }}>
                     {member.name.split(' ').map(n => n[0]).join('')}
                   </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-[#050508] via-transparent to-transparent opacity-40" />
                 </div>
                 <div className="p-5">
-                  <h3 className="text-white font-bold mb-0.5" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>{member.name}</h3>
+                  <h3 className="text-white font-bold text-base md:text-lg mb-0.5" style={{ fontFamily: 'Syne, sans-serif' }}>{member.name}</h3>
                   <p className="text-[#00D4FF] text-sm mb-3">{member.role}</p>
-                  <p className="text-white/40 text-xs leading-relaxed mb-4">{member.bio}</p>
+                  <p className="text-white/40 text-sm leading-relaxed mb-4">{member.bio}</p>
                   <div className="flex gap-2">
                     <a href={member.linkedin} className="w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center text-white/40 hover:text-[#00D4FF] hover:border-[#00D4FF]/30 transition-all">
                       <LinkedinIcon />

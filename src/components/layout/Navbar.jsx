@@ -57,9 +57,9 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#00D4FF] to-[#7C3AED] flex items-center justify-center shadow-[0_0_20px_rgba(0,212,255,0.4)] group-hover:shadow-[0_0_30px_rgba(0,212,255,0.6)] transition-shadow duration-300">
-              <span className="text-white font-black text-base leading-none" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>X</span>
+              <span className="text-white font-black text-base leading-none" style={{ fontFamily: 'Syne, sans-serif' }}>X</span>
             </div>
-            <span className="text-xl font-bold text-white" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+            <span className="text-xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
               x<span className="text-[#00D4FF]">Comify</span>
             </span>
           </Link>

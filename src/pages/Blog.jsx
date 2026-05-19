@@ -88,10 +88,10 @@ export default function Blog() {
         <div className="max-w-4xl mx-auto px-6">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">eCommerce Intelligence</span>
-            <h1 className="text-5xl md:text-6xl font-black text-white mb-6" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
               The <span className="gradient-text">xComify Blog</span>
             </h1>
-            <p className="text-white/50 text-lg max-w-xl mx-auto">
+            <p className="text-white/50 text-lg md:text-xl max-w-xl mx-auto">
               Actionable strategies, platform guides, and insider insights from our team of eCommerce experts.
             </p>
           </motion.div>
@@ -116,7 +116,7 @@ export default function Blog() {
                   <Tag size={12} className="text-[#00D4FF]" />
                   <span className="text-xs text-[#00D4FF] font-medium">{featured.category}</span>
                 </div>
-                <h2 className="text-2xl font-black text-white mb-3 leading-tight" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>{featured.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-black text-white mb-3 leading-tight" style={{ fontFamily: 'Syne, sans-serif' }}>{featured.title}</h2>
                 <p className="text-white/50 text-sm leading-relaxed mb-6">{featured.excerpt}</p>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4 text-xs text-white/30">
@@ -173,7 +173,7 @@ export default function Blog() {
                     <span className="flex items-center gap-1"><Calendar size={10} /> {post.date}</span>
                     <span className="flex items-center gap-1"><Clock size={10} /> {post.readTime}</span>
                   </div>
-                  <h3 className="text-white font-bold text-base leading-tight mb-3 group-hover:text-[#00D4FF] transition-colors" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+                  <h3 className="text-white font-bold text-lg leading-tight mb-3 group-hover:text-[#00D4FF] transition-colors" style={{ fontFamily: 'Syne, sans-serif' }}>
                     {post.title}
                   </h3>
                   <p className="text-white/40 text-sm leading-relaxed mb-4 line-clamp-2">{post.excerpt}</p>

@@ -422,7 +422,7 @@ export default function SplashScreen({ onComplete }) {
                   initial="hidden"
                   animate="visible"
                   style={{
-                    fontFamily: 'Cabinet Grotesk, sans-serif',
+                    fontFamily: 'Syne, sans-serif',
                     color: i === 0 ? '#00D4FF' : '#FFFFFF',
                     display: 'inline-block',
                     fontSize: '3.75rem',
@@ -504,7 +504,7 @@ function ProgressLabel({ value }) {
   return (
     <motion.span
       className="text-xs text-[#4B5563] tabular-nums -mt-6"
-      style={{ fontFamily: 'Outfit, sans-serif' }}
+      style={{ fontFamily: 'DM Sans, sans-serif' }}
     >
       {display}
     </motion.span>

@@ -4,10 +4,64 @@ import { ArrowRight, Play, Sparkles } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import MagneticButton from '../../components/ui/MagneticButton'
 
+function WordReveal({ children, delay = 0, className = '' }) {
+  return (
+    <span style={{ display: 'inline-block', overflow: 'hidden' }}>
+      <motion.span
+        style={{ display: 'inline-block' }}
+        className={className}
+        initial={{ y: '110%' }}
+        animate={{ y: '0%' }}
+        transition={{ delay, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      >
+        {children}
+      </motion.span>
+    </span>
+  )
+}
+
+function CharReveal({ text, delay = 0, className = '' }) {
+  return (
+    <span style={{ display: 'inline-flex', flexWrap: 'wrap' }}>
+      {text.split('').map((char, i) => (
+        <span key={i} style={{ display: 'inline-block', overflow: 'hidden' }}>
+          <motion.span
+            style={{ display: 'inline-block' }}
+            className={className}
+            initial={{ y: '110%', opacity: 0 }}
+            animate={{ y: '0%', opacity: 1 }}
+            transition={{
+              delay: delay + i * 0.032,
+              duration: 0.65,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          >
+            {char}
+          </motion.span>
+        </span>
+      ))}
+    </span>
+  )
+}
+
+function DrawLine({ delay = 0, fromRight = false }) {
+  return (
+    <motion.div
+      className="h-px w-full"
+      style={{
+        background: 'linear-gradient(90deg, transparent, #00D4FF50, #7C3AED50, transparent)',
+        transformOrigin: fromRight ? 'right' : 'left',
+      }}
+      initial={{ scaleX: 0 }}
+      animate={{ scaleX: 1 }}
+      transition={{ delay, duration: 1.3, ease: [0.22, 1, 0.36, 1] }}
+    />
+  )
+}
+
 export default function HeroSection() {
   const canvasRef = useRef(null)
 
-  // Particle background
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -59,17 +113,10 @@ export default function HeroSection() {
     }
   }, [])
 
-  const wordVariants = {
-    hidden: { opacity: 0, y: 60, rotateX: -90 },
-    visible: (i) => ({
-      opacity: 1, y: 0, rotateX: 0,
-      transition: { delay: 0.6 + i * 0.12, duration: 0.8, ease: [0.22, 1, 0.36, 1] },
-    }),
-  }
-
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0A0A0F]">
-      {/* Morph transition continuation — center glow matching splash gradient, fades as iris opens */}
+
+      {/* Morph transition continuation */}
       <motion.div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -100,49 +147,123 @@ export default function HeroSection() {
         }}
       />
 
+      {/* Editorial sidebar — left vertical rule + label */}
+      <div className="absolute left-6 top-1/2 -translate-y-1/2 hidden lg:flex flex-col items-center gap-4 z-20">
+        <motion.div
+          className="text-[10px] font-semibold tracking-[0.25em] uppercase text-white/20 [writing-mode:vertical-rl] rotate-180"
+          style={{ fontFamily: 'Syne, sans-serif' }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.8, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
+          Premium eCommerce
+        </motion.div>
+        <motion.div
+          className="w-px bg-gradient-to-b from-transparent via-[#00D4FF]/40 to-transparent"
+          initial={{ scaleY: 0, opacity: 0 }}
+          animate={{ scaleY: 1, opacity: 1 }}
+          transition={{ delay: 1.6, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          style={{ height: '120px', transformOrigin: 'top' }}
+        />
+        <motion.div
+          className="text-[10px] font-semibold tracking-[0.25em] uppercase text-white/20"
+          style={{ fontFamily: 'Syne, sans-serif' }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2, duration: 0.6 }}
+        >
+          01
+        </motion.div>
+      </div>
+
+      {/* Editorial corner label — top right */}
+      <motion.div
+        className="absolute top-24 right-6 hidden lg:flex items-center gap-2 z-20"
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 1.9, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-white/20" style={{ fontFamily: 'Syne, sans-serif' }}>
+          Since 2018
+        </span>
+        <div className="w-6 h-px bg-white/20" />
+      </motion.div>
+
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 text-center pt-32 pb-20">
+
+        {/* Top rule */}
+        <div className="mb-8 max-w-sm mx-auto">
+          <DrawLine delay={0.2} />
+        </div>
+
         {/* Badge */}
         <motion.div
-          initial={{ opacity: 0, y: 20, scale: 0.9 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ delay: 0.3, duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#00D4FF]/30 bg-[#00D4FF]/8 mb-8"
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.4, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#00D4FF]/30 bg-[#00D4FF]/8 mb-10"
         >
           <Sparkles size={14} className="text-[#00D4FF]" />
           <span className="text-sm text-[#00D4FF] font-medium tracking-wide">Premium eCommerce Management Since 2018</span>
         </motion.div>
 
-        {/* Headline */}
-        <div className="overflow-hidden mb-6" style={{ perspective: '1000px' }}>
-          {['Scale Your', 'eCommerce Empire'].map((line, li) => (
-            <div key={li} className="overflow-hidden">
-              <div className="flex flex-wrap justify-center gap-3">
-                {line.split(' ').map((word, wi) => (
-                  <motion.span
-                    key={`${li}-${wi}`}
-                    custom={li * 2 + wi}
-                    variants={wordVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className={`text-6xl md:text-7xl lg:text-8xl font-black leading-none tracking-tight ${
-                      li === 1 ? 'gradient-text' : 'text-white'
-                    }`}
-                    style={{ fontFamily: 'Cabinet Grotesk, sans-serif', display: 'inline-block' }}
-                  >
-                    {word}
-                  </motion.span>
-                ))}
-              </div>
-            </div>
-          ))}
+        {/* Headline — editorial reveal */}
+        <div className="mb-2" style={{ perspective: '1200px' }}>
+          {/* Line 1: "Scale Your" */}
+          <div className="flex flex-wrap justify-center gap-4 mb-1">
+            <h1
+              className="text-6xl md:text-7xl lg:text-8xl font-black leading-none tracking-tight text-white"
+              style={{ fontFamily: 'Syne, sans-serif' }}
+            >
+              <WordReveal delay={0.55}>Scale</WordReveal>
+              {' '}
+              <WordReveal delay={0.68}>Your</WordReveal>
+            </h1>
+          </div>
+
+          {/* Line 2: "eCommerce" — char by char */}
+          <div className="flex justify-center mb-1">
+            <h1
+              className="text-6xl md:text-7xl lg:text-8xl font-black leading-none tracking-tight gradient-text"
+              style={{ fontFamily: 'Syne, sans-serif' }}
+            >
+              <CharReveal text="eCommerce" delay={0.78} />
+            </h1>
+          </div>
+
+          {/* Line 3: "Empire" */}
+          <div className="flex justify-center">
+            <h1
+              className="text-6xl md:text-7xl lg:text-8xl font-black leading-none tracking-tight text-white"
+              style={{ fontFamily: 'Syne, sans-serif' }}
+            >
+              <WordReveal delay={1.1}>Empire</WordReveal>
+            </h1>
+          </div>
         </div>
 
-        {/* Sub headline */}
+        {/* Rule after headline */}
+        <div className="my-8 flex items-center gap-4 max-w-lg mx-auto">
+          <div className="flex-1">
+            <DrawLine delay={1.28} fromRight />
+          </div>
+          <motion.div
+            className="w-1.5 h-1.5 rounded-full bg-[#00D4FF] shrink-0"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 1.35, duration: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
+          />
+          <div className="flex-1">
+            <DrawLine delay={1.28} />
+          </div>
+        </div>
+
+        {/* Sub headline — word by word */}
         <motion.p
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ delay: 1.4, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="text-white/50 text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed"
         >
           Full-service eCommerce management across Amazon, eBay, Etsy, Shopify, Walmart & TikTok Shop.
@@ -153,7 +274,7 @@ export default function HeroSection() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.3, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ delay: 1.55, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="flex flex-wrap items-center justify-center gap-4 mb-20"
         >
           <MagneticButton>
@@ -177,11 +298,11 @@ export default function HeroSection() {
           </MagneticButton>
         </motion.div>
 
-        {/* Stats bar */}
+        {/* Stats bar — staggered reveal */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.5, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.7, duration: 0.4 }}
           className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/8 rounded-2xl overflow-hidden border border-white/8"
         >
           {[
@@ -190,18 +311,18 @@ export default function HeroSection() {
             { value: '97%', label: 'Client Satisfaction' },
             { value: '7+', label: 'Platforms' },
           ].map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.6 + i * 0.1 }}
-              className="bg-[#0A0A0F] px-6 py-5 text-center"
-            >
-              <div className="text-2xl md:text-3xl font-black text-white mb-1" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
-                {stat.value}
-              </div>
-              <div className="text-xs text-white/40 tracking-wide">{stat.label}</div>
-            </motion.div>
+            <div key={stat.label} className="bg-[#0A0A0F] px-6 py-5 text-center overflow-hidden">
+              <motion.div
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 1.75 + i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div className="text-2xl md:text-3xl font-black text-white mb-1" style={{ fontFamily: 'Syne, sans-serif' }}>
+                  {stat.value}
+                </div>
+                <div className="text-xs text-white/40 tracking-wide">{stat.label}</div>
+              </motion.div>
+            </div>
           ))}
         </motion.div>
       </div>
@@ -210,10 +331,10 @@ export default function HeroSection() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2 }}
+        transition={{ delay: 2.1 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
       >
-        <span className="text-xs text-white/30 tracking-widest uppercase">Scroll</span>
+        <span className="text-[10px] text-white/30 tracking-widest uppercase" style={{ fontFamily: 'Syne, sans-serif' }}>Scroll</span>
         <motion.div
           className="w-px h-12 bg-gradient-to-b from-[#00D4FF]/60 to-transparent"
           animate={{ scaleY: [0, 1, 0], y: [0, 8, 0] }}

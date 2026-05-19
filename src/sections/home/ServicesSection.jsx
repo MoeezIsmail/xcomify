@@ -74,8 +74,8 @@ function OrbitCard({ service, index, rotation, negatedRotation, r, fw, fh, oneCa
     const d = dist(v)
     if (d < 14) return 1
     if (oneCard) {
-      if (d < 32) return 0.72 + 0.28 * (1 - (d - 14) / 18)
-      return 0.72
+      if (d < 22) return 1 - ((d - 14) / 8) * 0.15
+      return 0.85
     }
     if (d < 30) return 1 - ((d - 14) / 16) * (1 - SN)
     return SN
@@ -85,7 +85,7 @@ function OrbitCard({ service, index, rotation, negatedRotation, r, fw, fh, oneCa
     const d = dist(v)
     if (d < 14) return 1
     if (oneCard) {
-      if (d < 32) return 1 - (d - 14) / 18
+      if (d < 22) return 1 - (d - 14) / 8
       return 0
     }
     if (d < 38) return 0.84
@@ -165,15 +165,15 @@ export default function ServicesSection() {
             What We Do
           </span>
           <h2
-            className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-black text-white mb-0 md:mb-5 leading-tight"
-            style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}
+            className="text-4xl md:text-5xl font-black text-white mb-0 md:mb-5 leading-tight"
+            style={{ fontFamily: 'Syne, sans-serif' }}
           >
             Services Built for{' '}
             <span className="gradient-text">7-Figure Growth</span>
           </h2>
 
           {/* Description + CTA — desktop only */}
-          <p className="hidden md:block text-white/50 text-sm lg:text-base leading-relaxed mb-8 max-w-sm">
+          <p className="hidden md:block text-white/50 text-base md:text-lg leading-relaxed mb-8 max-w-sm">
             Every service is engineered around one goal: maximising your eCommerce revenue
             while minimising your operational headaches.
           </p>
@@ -243,6 +243,7 @@ export default function ServicesSection() {
           {/* Gradient — bottom */}
           <div className="absolute bottom-0 left-0 right-0 pointer-events-none"
             style={{ height: 56, background: 'linear-gradient(to top, #050508, transparent)' }} />
+
 
           {/* X badge — 3-card desktop only */}
           {showDecor && (

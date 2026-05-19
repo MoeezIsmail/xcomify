@@ -11,11 +11,11 @@ export default function Testimonials() {
         <div className="max-w-4xl mx-auto px-6">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">What Clients Say</span>
-            <h1 className="text-5xl md:text-6xl font-black text-white mb-6" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
               500+ Clients.{' '}
               <span className="gradient-text">500+ Success Stories.</span>
             </h1>
-            <p className="text-white/50 text-lg max-w-xl mx-auto">
+            <p className="text-white/50 text-lg md:text-xl max-w-xl mx-auto">
               Don't take our word for it. Here's what our clients say about working with xComify.
             </p>
           </motion.div>
@@ -44,7 +44,7 @@ export default function Testimonials() {
                   ))}
                 </div>
 
-                <p className="text-white/70 text-sm leading-relaxed flex-1">"{t.content}"</p>
+                <p className="text-white/70 text-sm md:text-base leading-relaxed flex-1">"{t.content}"</p>
 
                 <div className="flex items-center justify-between pt-4 border-t border-white/8">
                   <div className="flex items-center gap-3">
@@ -52,8 +52,8 @@ export default function Testimonials() {
                       {t.name[0]}
                     </div>
                     <div>
-                      <div className="text-white font-semibold text-sm">{t.name}</div>
-                      <div className="text-white/40 text-xs">{t.company}</div>
+                      <div className="text-white font-semibold text-base">{t.name}</div>
+                      <div className="text-white/40 text-sm">{t.company}</div>
                     </div>
                   </div>
                   <div className="px-2 py-1 rounded-md text-xs font-medium bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/20">

@@ -142,7 +142,7 @@ export default function App() {
       <BrowserRouter>
         <CustomCursor />
         <Toaster position="top-right" toastOptions={{
-          style: { background: '#111118', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', fontFamily: 'Outfit, sans-serif', fontSize: '14px' }
+          style: { background: '#111118', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', fontFamily: 'DM Sans, sans-serif', fontSize: '14px' }
         }} />
 
         <AnimatePresence>

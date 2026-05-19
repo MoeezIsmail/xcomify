@@ -45,7 +45,7 @@ export default function InquiriesManager() {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-4 mb-6">
           <div>
-            <h1 className="text-xl font-black text-white" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>Contact Inquiries</h1>
+            <h1 className="text-xl font-black text-white" style={{ fontFamily: 'Syne, sans-serif' }}>Contact Inquiries</h1>
             <p className="text-white/40 text-xs">{unread} unread · {inquiries.length} total</p>
           </div>
           <div className="relative ml-auto max-w-xs flex-1">

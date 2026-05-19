@@ -20,7 +20,7 @@ const StatCard = ({ icon: Icon, label, value, change, color, delay }) => (
         </span>
       )}
     </div>
-    <div className="text-2xl font-black text-white mb-1" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>{value}</div>
+    <div className="text-2xl font-black text-white mb-1" style={{ fontFamily: 'Syne, sans-serif' }}>{value}</div>
     <div className="text-white/40 text-xs">{label}</div>
   </motion.div>
 )
@@ -62,7 +62,7 @@ export default function AdminDashboard() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-black text-white mb-1" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>Dashboard</h1>
+        <h1 className="text-2xl font-black text-white mb-1" style={{ fontFamily: 'Syne, sans-serif' }}>Dashboard</h1>
         <p className="text-white/40 text-sm">Welcome back. Here's what's happening today.</p>
       </div>
 

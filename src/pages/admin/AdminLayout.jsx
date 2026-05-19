@@ -49,9 +49,9 @@ export default function AdminLayout() {
             <div className="p-5 border-b border-white/8">
               <Link to="/" className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00D4FF] to-[#7C3AED] flex items-center justify-center">
-                  <span className="text-white font-black text-sm" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>X</span>
+                  <span className="text-white font-black text-sm" style={{ fontFamily: 'Syne, sans-serif' }}>X</span>
                 </div>
-                <span className="text-white font-bold text-sm" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+                <span className="text-white font-bold text-sm" style={{ fontFamily: 'Syne, sans-serif' }}>
                   x<span className="text-[#00D4FF]">Comify</span>
                   <span className="text-white/30 ml-1 font-normal text-xs">Admin</span>
                 </span>

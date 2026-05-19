@@ -8,11 +8,11 @@ export default function ProcessSection() {
       <div className="max-w-7xl mx-auto px-6">
         <ScrollReveal className="text-center mb-20">
           <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">How It Works</span>
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-4" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+          <h2 className="text-4xl md:text-5xl font-black text-white mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
             From Zero to{' '}
             <span className="gradient-text">7 Figures</span>
           </h2>
-          <p className="text-white/50 max-w-xl mx-auto">
+          <p className="text-white/50 text-base md:text-lg max-w-xl mx-auto">
             Our battle-tested process gets you results in 30 days or less.
           </p>
         </ScrollReveal>
@@ -49,12 +49,12 @@ export default function ProcessSection() {
                     </div>
                     <div>
                       <div className="text-xs text-white/30 mb-1">{step.duration}</div>
-                      <h3 className="text-white font-bold text-lg leading-tight" style={{ fontFamily: 'Cabinet Grotesk, sans-serif' }}>
+                      <h3 className="text-white font-bold text-lg md:text-xl leading-tight" style={{ fontFamily: 'Syne, sans-serif' }}>
                         {step.title}
                       </h3>
                     </div>
                   </div>
-                  <p className="text-white/50 text-sm leading-relaxed">{step.description}</p>
+                  <p className="text-white/50 text-sm md:text-base leading-relaxed">{step.description}</p>
                 </div>
               </motion.div>
             ))}
