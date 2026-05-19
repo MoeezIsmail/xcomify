@@ -190,7 +190,7 @@ export default function HeroSection() {
       </motion.div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 text-center pt-32 pb-20">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 text-center pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 md:pb-20">
 
         {/* Top rule */}
         <div className="mb-8 max-w-sm mx-auto">
@@ -213,7 +213,7 @@ export default function HeroSection() {
           {/* Line 1: "Scale Your" */}
           <div className="flex flex-wrap justify-center gap-4 mb-1">
             <h1
-              className="text-6xl md:text-7xl lg:text-8xl font-black leading-none tracking-tight text-white"
+              className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black leading-none tracking-tight text-white"
               style={{ fontFamily: 'Syne, sans-serif' }}
             >
               <WordReveal delay={0.55}>Scale</WordReveal>
@@ -225,7 +225,7 @@ export default function HeroSection() {
           {/* Line 2: "eCommerce" — char by char */}
           <div className="flex justify-center mb-1">
             <h1
-              className="text-6xl md:text-7xl lg:text-8xl font-black leading-none tracking-tight gradient-text"
+              className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black leading-none tracking-tight gradient-text"
               style={{ fontFamily: 'Syne, sans-serif' }}
             >
               <CharReveal text="eCommerce" delay={0.78} />
@@ -235,7 +235,7 @@ export default function HeroSection() {
           {/* Line 3: "Empire" */}
           <div className="flex justify-center">
             <h1
-              className="text-6xl md:text-7xl lg:text-8xl font-black leading-none tracking-tight text-white"
+              className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black leading-none tracking-tight text-white"
               style={{ fontFamily: 'Syne, sans-serif' }}
             >
               <WordReveal delay={1.1}>Empire</WordReveal>
@@ -264,7 +264,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.4, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="text-white/50 text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed"
+          className="text-white/50 text-sm sm:text-base md:text-xl max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed"
         >
           Full-service eCommerce management across Amazon, eBay, Etsy, Shopify, Walmart & TikTok Shop.
           We handle everything — you collect the profits.
@@ -275,7 +275,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.55, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="flex flex-wrap items-center justify-center gap-4 mb-20"
+          className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-12 sm:mb-16 md:mb-20"
         >
           <MagneticButton>
             <Link
@@ -317,7 +317,7 @@ export default function HeroSection() {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 1.75 + i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
               >
-                <div className="text-2xl md:text-3xl font-black text-white mb-1" style={{ fontFamily: 'Syne, sans-serif' }}>
+                <div className="text-xl sm:text-2xl md:text-3xl font-black text-white mb-1" style={{ fontFamily: 'Syne, sans-serif' }}>
                   {stat.value}
                 </div>
                 <div className="text-xs text-white/40 tracking-wide">{stat.label}</div>

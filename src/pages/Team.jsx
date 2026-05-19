@@ -24,23 +24,23 @@ const allTeam = [
 export default function Team() {
   return (
     <main className="pt-24">
-      <section className="py-20 bg-[#0A0A0F] text-center">
-        <div className="max-w-4xl mx-auto px-6">
+      <section className="py-10 sm:py-14 lg:py-20 bg-[#0A0A0F] text-center">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">Meet the Team</span>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white mb-4 sm:mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
               The Experts Behind{' '}
               <span className="gradient-text">Your Growth</span>
             </h1>
-            <p className="text-white/50 text-lg md:text-xl max-w-xl mx-auto">
+            <p className="text-white/50 text-sm sm:text-base md:text-lg max-w-xl mx-auto">
               50+ specialists across every eCommerce discipline. Each one hand-picked for expertise, results, and passion.
             </p>
           </motion.div>
         </div>
       </section>
 
-      <section className="py-24 bg-[#050508]">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="py-10 sm:py-16 lg:py-24 bg-[#050508]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {allTeam.map((member, i) => (
               <motion.div

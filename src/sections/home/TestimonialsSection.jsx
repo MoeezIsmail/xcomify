@@ -26,16 +26,16 @@ export default function TestimonialsSection() {
   const t = testimonials[current]
 
   return (
-    <section className="py-32 bg-[#0A0A0F] relative overflow-hidden">
+    <section className="py-14 sm:py-20 lg:py-32 bg-[#0A0A0F] relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 opacity-5"
         style={{ background: 'radial-gradient(ellipse at 50% 50%, #7C3AED 0%, transparent 60%)' }}
       />
 
-      <div className="max-w-5xl mx-auto px-6">
-        <ScrollReveal className="text-center mb-16">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+        <ScrollReveal className="text-center mb-8 sm:mb-12 lg:mb-16">
           <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">Client Stories</span>
-          <h2 className="text-4xl md:text-5xl font-black text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
             Don't Take{' '}
             <span className="gradient-text">Our Word for It</span>
           </h2>
@@ -50,7 +50,7 @@ export default function TestimonialsSection() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: direction * -60 }}
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="rounded-3xl border border-white/8 p-8 md:p-12 relative overflow-hidden"
+              className="rounded-3xl border border-white/8 p-5 sm:p-8 md:p-12 relative overflow-hidden"
               style={{ background: 'rgba(255,255,255,0.02)' }}
             >
               {/* Quote icon */}
@@ -66,7 +66,7 @@ export default function TestimonialsSection() {
               </div>
 
               {/* Quote */}
-              <blockquote className="text-xl md:text-2xl text-white font-medium leading-relaxed mb-8" style={{ fontFamily: 'Syne, sans-serif' }}>
+              <blockquote className="text-base sm:text-xl md:text-2xl text-white font-medium leading-relaxed mb-5 sm:mb-8" style={{ fontFamily: 'Syne, sans-serif' }}>
                 "{t.content}"
               </blockquote>
 

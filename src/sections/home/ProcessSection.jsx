@@ -4,11 +4,11 @@ import ScrollReveal from '../../components/ui/ScrollReveal'
 
 export default function ProcessSection() {
   return (
-    <section className="py-32 bg-[#050508] relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
-        <ScrollReveal className="text-center mb-20">
+    <section className="py-14 sm:py-20 lg:py-32 bg-[#050508] relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <ScrollReveal className="text-center mb-10 sm:mb-14 lg:mb-20">
           <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">How It Works</span>
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white mb-3 sm:mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
             From Zero to{' '}
             <span className="gradient-text">7 Figures</span>
           </h2>
@@ -23,7 +23,7 @@ export default function ProcessSection() {
             <div className="h-px bg-gradient-to-r from-[#00D4FF]/20 via-[#7C3AED]/20 to-[#00D4FF]/20" />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
             {processSteps.map((step, i) => (
               <motion.div
                 key={step.step}

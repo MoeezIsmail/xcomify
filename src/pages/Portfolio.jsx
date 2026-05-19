@@ -81,11 +81,11 @@ export default function Portfolio() {
 
   return (
     <main className="pt-24">
-      <section className="py-20 bg-[#0A0A0F] relative overflow-hidden">
-        <div className="max-w-5xl mx-auto px-6 text-center">
+      <section className="py-10 sm:py-14 lg:py-20 bg-[#0A0A0F] relative overflow-hidden">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">Case Studies</span>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white mb-4 sm:mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
               <span className="gradient-text">Real Results</span>{' '}
               from Real Clients
             </h1>
@@ -96,8 +96,8 @@ export default function Portfolio() {
         </div>
       </section>
 
-      <section className="py-12 bg-[#050508] sticky top-20 z-50 border-b border-white/8">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="py-6 sm:py-10 lg:py-12 bg-[#050508] sticky top-20 z-50 border-b border-white/8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex flex-wrap gap-2 justify-center">
             {categories.map((cat) => (
               <button
@@ -116,8 +116,8 @@ export default function Portfolio() {
         </div>
       </section>
 
-      <section className="py-20 bg-[#050508]">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="py-10 sm:py-14 lg:py-20 bg-[#050508]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <AnimatePresence mode="wait">
             <motion.div
               key={filter}

@@ -58,7 +58,7 @@ export default function PlatformsSection() {
   const [active, setActive] = useState(platforms[0])
 
   return (
-    <section className="py-32 bg-[#0A0A0F] relative overflow-hidden">
+    <section className="py-14 sm:py-20 lg:py-32 bg-[#0A0A0F] relative overflow-hidden">
       <div className="absolute inset-0 opacity-[0.03]"
         style={{
           backgroundImage: 'radial-gradient(rgba(0,212,255,1) 1px, transparent 1px)',
@@ -66,10 +66,10 @@ export default function PlatformsSection() {
         }}
       />
 
-      <div className="max-w-7xl mx-auto px-6">
-        <ScrollReveal className="text-center mb-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <ScrollReveal className="text-center mb-8 sm:mb-12 lg:mb-16">
           <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">Platforms We Dominate</span>
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white mb-3 sm:mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
             One Agency.{' '}
             <span className="gradient-text">Every Platform.</span>
           </h2>
@@ -78,7 +78,7 @@ export default function PlatformsSection() {
           </p>
         </ScrollReveal>
 
-        <div className="grid lg:grid-cols-5 gap-6">
+        <div className="grid lg:grid-cols-5 gap-4 sm:gap-6">
           {/* Platform selector */}
           <div className="lg:col-span-2 flex flex-col gap-2">
             {platforms.map((platform, i) => (

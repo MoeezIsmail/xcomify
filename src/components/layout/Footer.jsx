@@ -63,9 +63,9 @@ export default function Footer() {
         style={{ background: 'radial-gradient(circle, #00D4FF 0%, #7C3AED 50%, transparent 70%)' }}
       />
 
-      <div className="max-w-7xl mx-auto px-6 pt-20 pb-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-12 sm:pt-16 lg:pt-20 pb-6 sm:pb-8 lg:pb-10">
         {/* Top section */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-10 lg:gap-12 mb-10 sm:mb-12 lg:mb-16">
           {/* Brand */}
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-6">
@@ -114,10 +114,10 @@ export default function Footer() {
         </div>
 
         {/* Newsletter */}
-        <div className="border border-white/8 rounded-2xl p-8 mb-12 bg-white/2">
+        <div className="border border-white/8 rounded-2xl p-5 sm:p-6 lg:p-8 mb-8 sm:mb-10 lg:mb-12 bg-white/2">
           <div className="flex flex-col md:flex-row items-center gap-6 justify-between">
             <div>
-              <h4 className="text-white font-bold text-lg mb-1">Stay ahead of the curve</h4>
+              <h4 className="text-white font-bold text-base sm:text-lg mb-1">Stay ahead of the curve</h4>
               <p className="text-white/50 text-sm">eCommerce insights, platform updates & growth strategies — weekly.</p>
             </div>
             <div className="flex gap-3 w-full md:w-auto">

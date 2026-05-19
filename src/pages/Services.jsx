@@ -7,11 +7,11 @@ import CTASection from '../sections/home/CTASection'
 export default function Services() {
   return (
     <main className="pt-24">
-      <section className="py-20 bg-[#0A0A0F] relative overflow-hidden">
-        <div className="max-w-5xl mx-auto px-6 text-center">
+      <section className="py-10 sm:py-14 lg:py-20 bg-[#0A0A0F] relative overflow-hidden">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">What We Offer</span>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white mb-4 sm:mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
               Every Service You Need to{' '}
               <span className="gradient-text">Dominate eCommerce</span>
             </h1>
@@ -22,8 +22,8 @@ export default function Services() {
         </div>
       </section>
 
-      <section className="py-24 bg-[#050508]">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="py-10 sm:py-16 lg:py-24 bg-[#050508]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((service, i) => (
               <div id={service.slug} key={service.id}>

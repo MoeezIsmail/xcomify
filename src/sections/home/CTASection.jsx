@@ -68,7 +68,7 @@ export default function CTASection() {
   const inView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
-    <section ref={ref} className="py-32 bg-[#050508] relative overflow-hidden">
+    <section ref={ref} className="py-14 sm:py-20 lg:py-32 bg-[#050508] relative overflow-hidden">
       {/* Ambient glow */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <motion.div
@@ -95,7 +95,7 @@ export default function CTASection() {
         </motion.span>
       </div>
 
-      <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10">
 
         {/* Top rule */}
         <div className="mb-10">
@@ -116,7 +116,7 @@ export default function CTASection() {
 
         {/* Headline — editorial word reveal */}
         <h2
-          className="text-4xl md:text-6xl font-black text-white mb-3 leading-[1.05] tracking-tight"
+          className="text-2xl sm:text-4xl md:text-6xl font-black text-white mb-3 leading-[1.05] tracking-tight"
           style={{ fontFamily: 'Syne, sans-serif' }}
         >
           <span className="flex flex-wrap justify-center gap-x-4">
@@ -130,7 +130,7 @@ export default function CTASection() {
           <CharReveal
             text="DOMINATE"
             delay={0.62}
-            className="text-5xl md:text-7xl lg:text-8xl font-black gradient-text tracking-tight"
+            className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black gradient-text tracking-tight"
           />
         </div>
 
@@ -184,7 +184,7 @@ export default function CTASection() {
           <MagneticButton>
             <Link
               to="/contact"
-              className="group flex items-center gap-2.5 px-10 py-5 rounded-xl bg-gradient-to-r from-[#00D4FF] to-[#7C3AED] text-white font-bold text-lg shadow-[0_0_50px_rgba(0,212,255,0.3)] hover:shadow-[0_0_70px_rgba(0,212,255,0.5)] transition-shadow duration-300"
+              className="group flex items-center gap-2.5 px-6 sm:px-10 py-4 sm:py-5 rounded-xl bg-gradient-to-r from-[#00D4FF] to-[#7C3AED] text-white font-bold text-lg shadow-[0_0_50px_rgba(0,212,255,0.3)] hover:shadow-[0_0_70px_rgba(0,212,255,0.5)] transition-shadow duration-300"
             >
               Book Free Strategy Call
               <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
@@ -194,7 +194,7 @@ export default function CTASection() {
           <MagneticButton>
             <Link
               to="/pricing"
-              className="flex items-center gap-2 px-10 py-5 rounded-xl border border-white/15 text-white/80 font-semibold text-lg hover:border-white/30 hover:text-white hover:bg-white/4 transition-all duration-200"
+              className="flex items-center gap-2 px-6 sm:px-10 py-4 sm:py-5 rounded-xl border border-white/15 text-white/80 font-semibold text-lg hover:border-white/30 hover:text-white hover:bg-white/4 transition-all duration-200"
             >
               View Pricing Plans
             </Link>

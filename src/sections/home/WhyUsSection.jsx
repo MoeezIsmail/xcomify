@@ -43,13 +43,13 @@ const reasons = [
 
 export default function WhyUsSection() {
   return (
-    <section className="py-32 bg-[#0A0A0F] relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+    <section className="py-14 sm:py-20 lg:py-32 bg-[#0A0A0F] relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
           {/* Left */}
           <ScrollReveal direction="left">
             <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">Why xComify</span>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4 sm:mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
               Not Just an Agency.{' '}
               <span className="gradient-text">Your Growth Partner.</span>
             </h2>

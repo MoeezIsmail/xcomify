@@ -37,28 +37,28 @@ export default function Contact() {
     <main className="pt-24">
       <Toaster position="top-right" toastOptions={{ style: { background: '#111118', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' } }} />
 
-      <section className="py-20 bg-[#0A0A0F] text-center relative overflow-hidden">
-        <div className="max-w-4xl mx-auto px-6">
+      <section className="py-10 sm:py-14 lg:py-20 bg-[#0A0A0F] text-center relative overflow-hidden">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">Get in Touch</span>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white mb-4 sm:mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
               Let's Build Something{' '}
               <span className="gradient-text">Extraordinary</span>
             </h1>
-            <p className="text-white/50 text-lg md:text-xl max-w-xl mx-auto">
+            <p className="text-white/50 text-sm sm:text-base md:text-lg max-w-xl mx-auto">
               Schedule a free strategy call or send us a message. We respond to every inquiry within 24 hours.
             </p>
           </motion.div>
         </div>
       </section>
 
-      <section className="py-24 bg-[#050508]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-5 gap-12">
+      <section className="py-10 sm:py-16 lg:py-24 bg-[#050508]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="grid lg:grid-cols-5 gap-8 sm:gap-10 lg:gap-12">
             {/* Left - info */}
             <div className="lg:col-span-2">
               <ScrollReveal direction="left">
-                <h2 className="text-2xl md:text-3xl font-bold text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>Contact Information</h2>
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-4 sm:mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>Contact Information</h2>
                 <div className="flex flex-col gap-4 mb-8">
                   {contactInfo.map((item) => (
                     <div key={item.label} className="flex items-center gap-4 p-4 rounded-xl border border-white/8 hover:border-white/15 transition-colors bg-white/2">
@@ -94,7 +94,7 @@ export default function Contact() {
               <ScrollReveal direction="right">
                 {submitted ? (
                   <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-                    className="text-center py-24 border border-[#00D4FF]/30 rounded-2xl bg-[#00D4FF]/5">
+                    className="text-center py-14 sm:py-20 lg:py-24 border border-[#00D4FF]/30 rounded-2xl bg-[#00D4FF]/5">
                     <div className="w-16 h-16 rounded-full bg-[#00D4FF]/20 flex items-center justify-center mx-auto mb-4">
                       <Check size={28} className="text-[#00D4FF]" />
                     </div>

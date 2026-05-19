@@ -11,15 +11,15 @@ const stats = [
 
 export default function StatsSection() {
   return (
-    <section className="py-24 bg-[#0A0A0F] relative overflow-hidden">
+    <section className="py-12 sm:py-16 lg:py-24 bg-[#0A0A0F] relative overflow-hidden">
       {/* Animated glow line */}
       <div className="absolute top-0 left-0 right-0 h-px">
         <div className="h-full bg-gradient-to-r from-transparent via-[#00D4FF]/40 to-transparent" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-6">
-        <ScrollReveal className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-3" style={{ fontFamily: 'Syne, sans-serif' }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <ScrollReveal className="text-center mb-8 sm:mb-12 lg:mb-16">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white mb-2 sm:mb-3" style={{ fontFamily: 'Syne, sans-serif' }}>
             Numbers That{' '}
             <span className="gradient-text">Speak for Themselves</span>
           </h2>

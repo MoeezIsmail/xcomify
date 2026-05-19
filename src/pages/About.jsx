@@ -16,21 +16,21 @@ export default function About() {
   return (
     <main className="pt-24">
       {/* Hero */}
-      <section className="py-20 bg-[#0A0A0F] relative overflow-hidden">
+      <section className="py-10 sm:py-14 lg:py-20 bg-[#0A0A0F] relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.03]"
           style={{
             backgroundImage: 'linear-gradient(rgba(0,212,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,1) 1px, transparent 1px)',
             backgroundSize: '60px 60px',
           }}
         />
-        <div className="max-w-5xl mx-auto px-6 text-center relative z-10">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
             <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">Our Story</span>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white mb-4 sm:mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
               Built by Sellers,{' '}
               <span className="gradient-text">for Sellers</span>
             </h1>
@@ -42,19 +42,19 @@ export default function About() {
       </section>
 
       {/* Mission */}
-      <section className="py-24 bg-[#050508]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <section className="py-10 sm:py-16 lg:py-24 bg-[#050508]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
             <ScrollReveal direction="left">
               <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">Our Mission</span>
-              <h2 className="text-4xl md:text-5xl font-black text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
                 Democratizing Access to{' '}
                 <span className="gradient-text">Elite eCommerce Expertise</span>
               </h2>
-              <p className="text-white/50 text-base md:text-lg leading-relaxed mb-6">
+              <p className="text-white/50 text-sm sm:text-base md:text-lg leading-relaxed mb-6">
                 We believe every brand deserves access to the same caliber of expertise that Fortune 500 companies have. Our mission is to level the playing field by giving ambitious entrepreneurs and growing businesses the tools, talent, and strategy to compete at the highest level.
               </p>
-              <p className="text-white/50 text-base md:text-lg leading-relaxed mb-8">
+              <p className="text-white/50 text-sm sm:text-base md:text-lg leading-relaxed mb-8">
                 Since 2018, we've helped over 500 businesses across 30+ countries generate more than $12M in combined revenue. And we're just getting started.
               </p>
               <Link
@@ -85,11 +85,11 @@ export default function About() {
       </section>
 
       {/* Values */}
-      <section className="py-24 bg-[#0A0A0F]">
-        <div className="max-w-7xl mx-auto px-6">
-          <ScrollReveal className="text-center mb-16">
+      <section className="py-10 sm:py-16 lg:py-24 bg-[#0A0A0F]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <ScrollReveal className="text-center mb-8 sm:mb-12 lg:mb-16">
             <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">Our Values</span>
-            <h2 className="text-4xl md:text-5xl font-black text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
               What Drives{' '}
               <span className="gradient-text">Everything We Do</span>
             </h2>
@@ -117,11 +117,11 @@ export default function About() {
       </section>
 
       {/* Team */}
-      <section className="py-24 bg-[#050508]">
-        <div className="max-w-7xl mx-auto px-6">
-          <ScrollReveal className="text-center mb-16">
+      <section className="py-10 sm:py-16 lg:py-24 bg-[#050508]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <ScrollReveal className="text-center mb-8 sm:mb-12 lg:mb-16">
             <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">Leadership Team</span>
-            <h2 className="text-4xl md:text-5xl font-black text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
               The People Behind Your{' '}
               <span className="gradient-text">Success</span>
             </h2>

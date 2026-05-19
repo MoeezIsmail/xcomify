@@ -57,11 +57,11 @@ export default function Careers() {
       <Toaster position="top-right" toastOptions={{ style: { background: '#111118', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' } }} />
 
       {/* Hero */}
-      <section className="py-20 bg-[#0A0A0F] text-center relative overflow-hidden">
-        <div className="max-w-4xl mx-auto px-6 relative z-10">
+      <section className="py-10 sm:py-14 lg:py-20 bg-[#0A0A0F] text-center relative overflow-hidden">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">We're Hiring</span>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white mb-4 sm:mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
               Join the Team That's{' '}
               <span className="gradient-text">Reshaping eCommerce</span>
             </h1>
@@ -73,8 +73,8 @@ export default function Careers() {
       </section>
 
       {/* Perks */}
-      <section className="py-16 bg-[#050508]">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="py-8 sm:py-12 lg:py-16 bg-[#050508]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {perks.map((perk, i) => (
               <motion.div key={perk.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
@@ -91,10 +91,10 @@ export default function Careers() {
       </section>
 
       {/* Open Roles */}
-      <section className="py-16 bg-[#0A0A0F]">
-        <div className="max-w-5xl mx-auto px-6">
+      <section className="py-8 sm:py-12 lg:py-16 bg-[#0A0A0F]">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <ScrollReveal className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-black text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
               Open <span className="gradient-text">Positions</span>
             </h2>
           </ScrollReveal>
@@ -120,10 +120,10 @@ export default function Careers() {
       </section>
 
       {/* Application Form */}
-      <section id="apply" className="py-24 bg-[#050508]">
-        <div className="max-w-3xl mx-auto px-6">
+      <section id="apply" className="py-10 sm:py-16 lg:py-24 bg-[#050508]">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6">
           <ScrollReveal className="text-center mb-12">
-            <h2 className="text-3xl font-black text-white mb-3" style={{ fontFamily: 'Syne, sans-serif' }}>
+            <h2 className="text-2xl sm:text-3xl font-black text-white mb-3" style={{ fontFamily: 'Syne, sans-serif' }}>
               Apply Now
             </h2>
             <p className="text-white/40">Fill out the form below and we'll get back to you within 3 business days.</p>
@@ -131,7 +131,7 @@ export default function Careers() {
 
           {submitted ? (
             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-              className="text-center py-20 border border-[#00D4FF]/30 rounded-2xl bg-[#00D4FF]/5">
+              className="text-center py-12 sm:py-16 lg:py-20 border border-[#00D4FF]/30 rounded-2xl bg-[#00D4FF]/5">
               <div className="w-16 h-16 rounded-full bg-[#00D4FF]/20 flex items-center justify-center mx-auto mb-4">
                 <Check size={28} className="text-[#00D4FF]" />
               </div>

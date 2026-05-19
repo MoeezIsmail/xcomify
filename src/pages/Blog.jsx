@@ -84,14 +84,14 @@ export default function Blog() {
 
   return (
     <main className="pt-24">
-      <section className="py-20 bg-[#0A0A0F] text-center">
-        <div className="max-w-4xl mx-auto px-6">
+      <section className="py-10 sm:py-14 lg:py-20 bg-[#0A0A0F] text-center">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             <span className="text-xs tracking-[0.3em] uppercase text-[#00D4FF] font-medium mb-4 block">eCommerce Intelligence</span>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white mb-4 sm:mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
               The <span className="gradient-text">xComify Blog</span>
             </h1>
-            <p className="text-white/50 text-lg md:text-xl max-w-xl mx-auto">
+            <p className="text-white/50 text-sm sm:text-base md:text-lg max-w-xl mx-auto">
               Actionable strategies, platform guides, and insider insights from our team of eCommerce experts.
             </p>
           </motion.div>
@@ -100,8 +100,8 @@ export default function Blog() {
 
       {/* Featured post */}
       {featured && (
-        <section className="py-12 bg-[#050508]">
-          <div className="max-w-7xl mx-auto px-6">
+        <section className="py-6 sm:py-10 lg:py-12 bg-[#050508]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
               className="group rounded-3xl border border-white/8 overflow-hidden hover:border-white/20 transition-all duration-300 grid md:grid-cols-2 bg-white/2">
               <div className="h-64 md:h-auto bg-gradient-to-br from-[#00D4FF]/20 to-[#7C3AED]/20 flex items-center justify-center relative">
@@ -116,7 +116,7 @@ export default function Blog() {
                   <Tag size={12} className="text-[#00D4FF]" />
                   <span className="text-xs text-[#00D4FF] font-medium">{featured.category}</span>
                 </div>
-                <h2 className="text-2xl md:text-3xl font-black text-white mb-3 leading-tight" style={{ fontFamily: 'Syne, sans-serif' }}>{featured.title}</h2>
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white mb-3 leading-tight" style={{ fontFamily: 'Syne, sans-serif' }}>{featured.title}</h2>
                 <p className="text-white/50 text-sm leading-relaxed mb-6">{featured.excerpt}</p>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4 text-xs text-white/30">
@@ -135,7 +135,7 @@ export default function Blog() {
 
       {/* Filter */}
       <section className="py-8 bg-[#050508] sticky top-20 z-50 border-b border-white/8">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex flex-wrap gap-2">
             {categories.map((cat) => (
               <button key={cat} onClick={() => setFilter(cat)}
@@ -150,8 +150,8 @@ export default function Blog() {
       </section>
 
       {/* Grid */}
-      <section className="py-16 bg-[#050508]">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="py-8 sm:py-12 lg:py-16 bg-[#050508]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {(filter === 'All' ? rest : filtered).map((post, i) => (
               <motion.article
