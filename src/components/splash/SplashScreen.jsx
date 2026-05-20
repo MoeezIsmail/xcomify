@@ -475,7 +475,6 @@ export default function SplashScreen({ onComplete }) {
           <motion.span>{progressMV}</motion.span>
           {/* Rendered via formatted counter below */}
         </motion.span>
-        <ProgressLabel value={progressMV} />
       </motion.div>
 
       {/* Corner brackets */}
