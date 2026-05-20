@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useMotionValue, useSpring, useMotionTemplate } from 'framer-motion'
 import { ArrowRight, Play, Sparkles } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import MagneticButton from '../../components/ui/MagneticButton'
@@ -59,14 +59,39 @@ function DrawLine({ delay = 0, fromRight = false }) {
   )
 }
 
+const ORBITAL_RINGS = [
+  { size: 880, duration: 70, dir: 1,  border: 'rgba(0,212,255,0.07)',   dot: '#00D4FF', dotR: 3 },
+  { size: 600, duration: 50, dir: -1, border: 'rgba(124,58,237,0.09)',  dot: '#7C3AED', dotR: 2.5 },
+  { size: 360, duration: 32, dir: 1,  border: 'rgba(0,212,255,0.065)',  dot: '#00D4FF', dotR: 2 },
+]
+
 export default function HeroSection() {
   const canvasRef = useRef(null)
+  const sectionRef = useRef(null)
+
+  const rawX = useMotionValue(-500)
+  const rawY = useMotionValue(-500)
+  const springX = useSpring(rawX, { stiffness: 120, damping: 20 })
+  const springY = useSpring(rawY, { stiffness: 120, damping: 20 })
+  const gridMask = useMotionTemplate`radial-gradient(circle 220px at ${springX}px ${springY}px, black 0%, transparent 100%)`
+
+  const handleMouseMove = (e) => {
+    const rect = sectionRef.current?.getBoundingClientRect()
+    if (!rect) return
+    rawX.set(e.clientX - rect.left)
+    rawY.set(e.clientY - rect.top)
+  }
+  const handleMouseLeave = () => {
+    rawX.set(-500)
+    rawY.set(-500)
+  }
 
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     let raf
+    let lastMeteorTime = 0
 
     const dpr = window.devicePixelRatio || 1
     const resize = () => {
@@ -81,9 +106,12 @@ export default function HeroSection() {
     resize()
     window.addEventListener('resize', resize)
 
+    const W = () => canvas.offsetWidth
+    const H = () => canvas.offsetHeight
+
     const particles = Array.from({ length: 80 }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
+      x: Math.random() * canvas.offsetWidth,
+      y: Math.random() * canvas.offsetHeight,
       r: Math.random() * 1.5 + 0.3,
       vx: (Math.random() - 0.5) * 0.2,
       vy: (Math.random() - 0.5) * 0.2,
@@ -91,21 +119,96 @@ export default function HeroSection() {
       pulse: Math.random() * Math.PI * 2,
     }))
 
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+    const meteors = []
+    const spawnMeteor = () => {
+      meteors.push({
+        x: Math.random() * W() * 1.3,
+        y: -8,
+        vx: -2.2 - Math.random() * 2,
+        vy: 1.6 + Math.random() * 2,
+        life: 1,
+        alpha: 0.7 + Math.random() * 0.3,
+        len: 55 + Math.random() * 75,
+      })
+    }
+
+    const draw = (ts) => {
+      ctx.clearRect(0, 0, W(), H())
+
+      /* Spawn meteors every ~3 s */
+      if (ts - lastMeteorTime > 3000) {
+        spawnMeteor()
+        if (Math.random() > 0.4) spawnMeteor()
+        lastMeteorTime = ts
+      }
+
+      /* Constellation lines */
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x
+          const dy = particles[i].y - particles[j].y
+          const dist = Math.sqrt(dx * dx + dy * dy)
+          if (dist < 120) {
+            ctx.beginPath()
+            ctx.moveTo(particles[i].x, particles[i].y)
+            ctx.lineTo(particles[j].x, particles[j].y)
+            ctx.strokeStyle = `rgba(0,212,255,${0.13 * (1 - dist / 120)})`
+            ctx.lineWidth = 0.5
+            ctx.stroke()
+          }
+        }
+      }
+
+      /* Particles */
       particles.forEach((p) => {
-        p.x = (p.x + p.vx + canvas.width) % canvas.width
-        p.y = (p.y + p.vy + canvas.height) % canvas.height
+        p.x = (p.x + p.vx + W()) % W()
+        p.y = (p.y + p.vy + H()) % H()
         p.pulse += 0.015
         const a = p.alpha * (0.6 + 0.4 * Math.sin(p.pulse))
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(0, 212, 255, ${a})`
+        ctx.fillStyle = `rgba(0,212,255,${a})`
         ctx.fill()
       })
+
+      /* Meteor streaks */
+      for (let i = meteors.length - 1; i >= 0; i--) {
+        const m = meteors[i]
+        m.x += m.vx
+        m.y += m.vy
+        m.life -= 0.007
+
+        if (m.life <= 0 || m.y > H() + 50) {
+          meteors.splice(i, 1)
+          continue
+        }
+
+        const spd = Math.sqrt(m.vx * m.vx + m.vy * m.vy)
+        const tx = m.x - (m.vx / spd) * m.len
+        const ty = m.y - (m.vy / spd) * m.len
+
+        const g = ctx.createLinearGradient(m.x, m.y, tx, ty)
+        g.addColorStop(0,   `rgba(255,255,255,${m.alpha * m.life})`)
+        g.addColorStop(0.2, `rgba(0,212,255,${m.alpha * m.life * 0.85})`)
+        g.addColorStop(1,   'rgba(0,212,255,0)')
+
+        ctx.beginPath()
+        ctx.moveTo(m.x, m.y)
+        ctx.lineTo(tx, ty)
+        ctx.strokeStyle = g
+        ctx.lineWidth = 1.5
+        ctx.stroke()
+
+        /* Head glow */
+        ctx.beginPath()
+        ctx.arc(m.x, m.y, 1.5, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(255,255,255,${m.alpha * m.life})`
+        ctx.fill()
+      }
+
       raf = requestAnimationFrame(draw)
     }
-    draw()
+    raf = requestAnimationFrame(draw)
 
     return () => {
       cancelAnimationFrame(raf)
@@ -114,7 +217,12 @@ export default function HeroSection() {
   }, [])
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0A0A0F]">
+    <section
+      ref={sectionRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0A0A0F]"
+    >
 
       {/* Morph transition continuation */}
       <motion.div
@@ -128,8 +236,39 @@ export default function HeroSection() {
         transition={{ duration: 1.1, ease: 'easeOut' }}
       />
 
-      {/* Particle canvas */}
+      {/* Constellation + meteor canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-60" />
+
+      {/* Orbital rings */}
+      <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+        {ORBITAL_RINGS.map((ring, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              width: ring.size,
+              height: ring.size,
+              border: `1px solid ${ring.border}`,
+            }}
+            animate={{ rotate: ring.dir === 1 ? 360 : -360 }}
+            transition={{ duration: ring.duration, repeat: Infinity, ease: 'linear' }}
+          >
+            {/* Orbiting glowing dot */}
+            <span
+              className="absolute rounded-full"
+              style={{
+                width:  ring.dotR * 2 + 2,
+                height: ring.dotR * 2 + 2,
+                background: ring.dot,
+                boxShadow: `0 0 8px ${ring.dot}, 0 0 18px ${ring.dot}90`,
+                top:  -(ring.dotR + 1),
+                left: '50%',
+                transform: 'translateX(-50%)',
+              }}
+            />
+          </motion.div>
+        ))}
+      </div>
 
       {/* Ambient glows */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[600px] pointer-events-none">
@@ -139,11 +278,22 @@ export default function HeroSection() {
           style={{ background: 'radial-gradient(circle, #7C3AED 0%, transparent 70%)', filter: 'blur(60px)' }} />
       </div>
 
-      {/* Grid lines */}
+      {/* Grid lines — dim base layer */}
       <div className="absolute inset-0 opacity-[0.04]"
         style={{
           backgroundImage: 'linear-gradient(rgba(0,212,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,1) 1px, transparent 1px)',
           backgroundSize: '80px 80px',
+        }}
+      />
+
+      {/* Grid lines — cursor-glow layer */}
+      <motion.div
+        className="absolute inset-0 opacity-40"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(0,212,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,1) 1px, transparent 1px)',
+          backgroundSize: '80px 80px',
+          maskImage: gridMask,
+          WebkitMaskImage: gridMask,
         }}
       />
 
@@ -259,7 +409,7 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Sub headline — word by word */}
+        {/* Sub headline */}
         <motion.p
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
@@ -298,7 +448,7 @@ export default function HeroSection() {
           </MagneticButton>
         </motion.div>
 
-        {/* Stats bar — staggered reveal */}
+        {/* Stats bar */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
