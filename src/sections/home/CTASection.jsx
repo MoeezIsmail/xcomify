@@ -39,7 +39,7 @@ function WordReveal({ children, delay = 0, className = '', style = {} }) {
 
 function CharReveal({ text, delay = 0, className = '' }) {
   return (
-    <span style={{ display: 'inline-flex', overflow: 'hidden' }}>
+    <span style={{ display: 'inline-flex', overflow: 'hidden', paddingBottom: '0.12em', marginBottom: '-0.12em' }}>
       {text.split('').map((char, i) => (
         <motion.span
           key={i}

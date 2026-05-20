@@ -28,7 +28,7 @@ export default function AnimatedCounter({ value, suffix = '', duration = 2000 })
   }, [inView, value, duration])
 
   return (
-    <span ref={ref}>
+    <span ref={ref} className={'xl:text-5xl'}>
       {count.toLocaleString()}{suffix}
     </span>
   )
