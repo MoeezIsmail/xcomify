@@ -156,8 +156,8 @@ export default function ServicesSection() {
         {/* ── Left column (desktop) / Top strip (mobile) ── */}
         <div className="
           md:w-[40%] md:flex-shrink-0 md:h-full
-          flex flex-col md:justify-center
-          px-6 md:px-10 lg:px-14 xl:px-20
+          flex flex-col md:justify-center xl:justify-end
+          px-6 md:px-10 lg:px-14
           pt-7 pb-3 md:pt-0 md:pb-0
           md:border-r md:border-white/[0.06]
         ">
@@ -165,7 +165,7 @@ export default function ServicesSection() {
             What We Do
           </span>
           <h2
-            className="text-4xl md:text-5xl font-black text-white mb-0 md:mb-5 leading-tight"
+            className="text-4xl md:text-5xl xl:text-6xl font-black text-white mb-0 md:mb-5 leading-tight"
             style={{ fontFamily: 'Syne, sans-serif' }}
           >
             Services Built for{' '}
@@ -244,40 +244,6 @@ export default function ServicesSection() {
           <div className="absolute bottom-0 left-0 right-0 pointer-events-none"
             style={{ height: 56, background: 'linear-gradient(to top, #050508, transparent)' }} />
 
-
-          {/* X badge — 3-card desktop only */}
-          {showDecor && (
-            <div className="absolute pointer-events-none"
-              style={{ left: '50%', top: pivot, transform: 'translate(-50%, -50%)' }}>
-              <div className="rounded-full bg-[#050508] flex items-center justify-center" style={{
-                width: 52, height: 52,
-                border: '1px solid rgba(0,212,255,0.22)',
-                boxShadow: '0 0 0 7px rgba(0,212,255,0.04), 0 0 36px rgba(0,212,255,0.13)',
-              }}>
-                <svg viewBox="0 0 40 40" width="20" height="20">
-                  <defs>
-                    <linearGradient id="svc-cx" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#00D4FF" />
-                      <stop offset="100%" stopColor="#7C3AED" />
-                    </linearGradient>
-                  </defs>
-                  <path d="M 9 9 L 31 31" stroke="url(#svc-cx)" strokeWidth="4.5" strokeLinecap="round" fill="none" />
-                  <path d="M 31 9 L 9 31" stroke="url(#svc-cx)" strokeWidth="4.5" strokeLinecap="round" fill="none" />
-                </svg>
-              </div>
-            </div>
-          )}
-
-          {/* Connector: badge → featured card — 3-card desktop only */}
-          {showDecor && (
-            <div className="absolute pointer-events-none"
-              style={{ left: '50%', top: pivot, transform: 'translateX(-50%)' }}>
-              <div style={{
-                width: 1, height: r - 32,
-                background: 'linear-gradient(to bottom, transparent, rgba(0,212,255,0.28))',
-              }} />
-            </div>
-          )}
 
           {/* Scroll hint */}
           <div className={`absolute bottom-6 pointer-events-none flex flex-col items-center gap-2 ${mobile ? 'left-1/2 -translate-x-1/2' : 'right-5 hidden sm:flex'}`}>

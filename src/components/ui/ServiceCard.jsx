@@ -28,7 +28,7 @@ export default function ServiceCard({ service, index = 0 }) {
   return (
     <motion.div
       ref={cardRef}
-      style={{ rotateX, rotateY, transformStyle: 'preserve-3d', perspective: 1000, backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
+      style={{ rotateX, rotateY, transformStyle: 'preserve-3d', perspective: 1000, backdropFilter: 'blur(24px) saturate(140%)', WebkitBackdropFilter: 'blur(24px) saturate(140%)', background: 'rgba(255,255,255,0.04)' }}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={handleMouseLeave}
@@ -36,7 +36,7 @@ export default function ServiceCard({ service, index = 0 }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
       transition={{ delay: (index % 4) * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="group relative rounded-2xl p-6 border border-white/8 bg-white/3 overflow-hidden h-full flex flex-col"
+      className="group relative rounded-2xl p-6 border border-white/10 overflow-hidden h-full flex flex-col"
     >
       {/* Glow on hover */}
       <motion.div
