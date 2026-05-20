@@ -98,24 +98,24 @@ export default function Footer() {
                 className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none select-none"
                 aria-hidden="true"
             >
-  <span
-      style={{
-          fontFamily: 'Syne, sans-serif',
-          fontSize: 'clamp(70px, 13vw, 220px)',
-          fontWeight: 900,
-          letterSpacing: '0.06em',
-          whiteSpace: 'nowrap',
-          lineHeight: 1,
-          background:
-              'linear-gradient(135deg, rgba(0,212,255,0.22) 0%, rgba(124,58,237,0.28) 50%, rgba(0,212,255,0.22) 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-          opacity: 1,
-      }}
-  >
-    XCOMIFY
-  </span>
+              <span
+                  style={{
+                      fontFamily: 'Syne, sans-serif',
+                      fontSize: 'clamp(70px, 13vw, 230px)',
+                      fontWeight: 900,
+                      letterSpacing: '0.06em',
+                      whiteSpace: 'nowrap',
+                      lineHeight: 1,
+                      background:
+                          'linear-gradient(135deg, rgba(0,212,255,0.08) 0%, rgba(124,58,237,0.1) 50%, rgba(0,212,255,0.08) 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      backgroundClip: 'text',
+                      opacity: 1,
+                  }}
+              >
+                XCOMIFY
+              </span>
             </div>
 
             {/* ── Interactive mouse-tracked glow ──────────────────── */}
@@ -134,39 +134,39 @@ export default function Footer() {
             />
 
             {/* ── Content ─────────────────────────────────────────── */}
-            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-16 sm:pt-20 lg:pt-28 pb-0">
+            <div className="relative z-10 w-full max-w-7xl flex flex-col items-center mx-auto px-4 sm:px-6 lg:px-8 pt-14 sm:pt-20 lg:pt-28 pb-0">
 
                 {/* Newsletter CTA */}
                 <motion.div
-                    className="text-center mb-16 sm:mb-20"
+                    className="text-center mb-12 sm:mb-16 w-full max-w-2xl"
                     initial={{opacity: 0, y: 32}}
                     whileInView={{opacity: 1, y: 0}}
-                    viewport={{once: true}}
+                    viewport={{once: true, amount: 0}}
                     transition={{duration: 0.7}}
                 >
-          <span className="text-[10px] sm:text-xs tracking-[0.35em] uppercase text-[#00D4FF]/80 font-medium mb-3 block">
-            Stay in the Loop
-          </span>
+                    <span className="text-[10px] sm:text-xs tracking-[0.35em] uppercase text-[#00D4FF]/80 font-medium mb-3 block">
+                        Stay in the Loop
+                    </span>
                     <h2
-                        className="text-3xl sm:text-4xl lg:text-[52px] font-black text-white mb-3 leading-tight"
+                        className="text-2xl sm:text-3xl md:text-4xl lg:text-[48px] font-black text-white mb-3 leading-tight"
                         style={{fontFamily: 'Syne, sans-serif'}}
                     >
                         Scale Smarter,{' '}
                         <span className="gradient-text">Every Week</span>
                     </h2>
-                    <p className="text-white/35 text-sm sm:text-base mb-8 max-w-sm mx-auto">
+                    <p className="text-white/35 text-xs sm:text-sm md:text-base mb-6 sm:mb-8 max-w-xs sm:max-w-sm mx-auto">
                         eCommerce insights &amp; growth strategies — delivered weekly. No spam, unsubscribe anytime.
                     </p>
                     <form
                         onSubmit={e => e.preventDefault()}
-                        className="flex gap-2 max-w-[390px] mx-auto"
+                        className="flex flex-col sm:flex-row gap-2 w-full max-w-sm mx-auto"
                     >
                         <input
                             type="email"
                             value={email}
                             onChange={e => setEmail(e.target.value)}
                             placeholder="your@email.com"
-                            className="flex-1 min-w-0 px-4 py-3.5 rounded-xl text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#00D4FF]/50 transition-colors"
+                            className="flex-1 min-w-0 px-4 py-3 sm:py-3.5 rounded-xl text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#00D4FF]/50 transition-colors"
                             style={{
                                 background: 'rgba(255,255,255,0.05)',
                                 border: '1px solid rgba(255,255,255,0.09)',
@@ -178,7 +178,7 @@ export default function Footer() {
                             type="submit"
                             whileHover={{scale: 1.05}}
                             whileTap={{scale: 0.96}}
-                            className="flex items-center gap-1.5 px-5 py-3.5 rounded-xl text-white text-sm font-bold whitespace-nowrap"
+                            className="flex items-center justify-center gap-1.5 px-5 py-3 sm:py-3.5 rounded-xl text-white text-sm font-bold whitespace-nowrap"
                             style={{
                                 background: 'linear-gradient(135deg, #00D4FF, #7C3AED)',
                                 boxShadow: '0 0 26px rgba(0,212,255,0.38)',
@@ -191,34 +191,33 @@ export default function Footer() {
                 </motion.div>
 
                 {/* Thin divider */}
-                <div className="h-px bg-white/[0.05] mb-12"/>
+                <div className="h-px bg-white/[0.05] mb-10 sm:mb-12 w-full"/>
 
                 {/* Quick Links Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 sm:gap-10 mb-14">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 sm:gap-10 lg:gap-16 mb-12 sm:mb-14 w-full">
                     {Object.entries(footerLinks).map(([title, links], i) => (
                         <motion.div
                             key={title}
                             initial={{opacity: 0, y: 18}}
                             whileInView={{opacity: 1, y: 0}}
-                            viewport={{once: true}}
+                            viewport={{once: true, amount: 0}}
                             transition={{delay: i * 0.08, duration: 0.5}}
+                            className={i === 2 ? 'col-span-2 sm:col-span-1' : ''}
                         >
-                            <h4
-                                className="text-white/85 font-bold text-[10px] tracking-[0.28em] uppercase mb-5 flex items-center gap-2"
-                            >
+                            <h4 className="text-white/85 font-bold text-[10px] tracking-[0.28em] uppercase mb-4 sm:mb-5 flex items-center gap-2">
                                 <span className="block w-3.5 h-px bg-[#00D4FF]/65 flex-shrink-0"/>
                                 {title}
                             </h4>
-                            <ul className="flex flex-col gap-2.5">
+                            <ul className={`flex gap-2.5 ${i === 2 ? 'flex-row flex-wrap sm:flex-col' : 'flex-col'}`}>
                                 {links.map(link => (
                                     <li key={link.href}>
                                         <Link
                                             to={link.href}
                                             className="text-[13px] text-white/35 hover:text-white/75 transition-colors duration-200 flex items-center gap-1 group w-fit"
                                         >
-                      <span className="group-hover:translate-x-0.5 transition-transform duration-200">
-                        {link.label}
-                      </span>
+                                            <span className="group-hover:translate-x-0.5 transition-transform duration-200">
+                                                {link.label}
+                                            </span>
                                             <ArrowUpRight
                                                 size={11}
                                                 className="opacity-0 group-hover:opacity-50 shrink-0 transition-opacity"
@@ -232,7 +231,7 @@ export default function Footer() {
                 </div>
 
                 {/* Socials */}
-                <div className="flex justify-center gap-3 mb-10">
+                <div className="flex justify-center gap-2 sm:gap-3 mb-8 sm:mb-10 w-full">
                     {socials.map(({icon: Icon, href, label}) => (
                         <motion.a
                             key={label}
@@ -240,7 +239,7 @@ export default function Footer() {
                             aria-label={label}
                             whileHover={{scale: 1.14, y: -3}}
                             whileTap={{scale: 0.90}}
-                            className="w-10 h-10 rounded-xl border border-white/8 flex items-center justify-center text-white/35 hover:text-[#00D4FF] hover:border-[#00D4FF]/40 hover:bg-[#00D4FF]/8 hover:shadow-[0_0_18px_rgba(0,212,255,0.25)] transition-all duration-200"
+                            className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-white/8 flex items-center justify-center text-white/35 hover:text-[#00D4FF] hover:border-[#00D4FF]/40 hover:bg-[#00D4FF]/8 hover:shadow-[0_0_18px_rgba(0,212,255,0.25)] transition-all duration-200"
                         >
                             <Icon/>
                         </motion.a>
@@ -248,10 +247,8 @@ export default function Footer() {
                 </div>
 
                 {/* Animated glow beam */}
-                <div className="relative h-[2px] mb-8 rounded-full overflow-hidden">
-                    {/* static track */}
+                <div className="relative h-[2px] w-full mb-6 sm:mb-8 rounded-full overflow-hidden">
                     <div className="absolute inset-0 rounded-full bg-white/[0.05]"/>
-                    {/* traveling beam */}
                     <motion.div
                         className="absolute top-0 h-full rounded-full"
                         style={{
@@ -259,23 +256,21 @@ export default function Footer() {
                             background: 'linear-gradient(90deg, transparent 0%, #00D4FF 25%, #7C3AED 75%, transparent 100%)',
                             boxShadow: '0 0 18px 5px rgba(0,212,255,0.55), 0 0 38px 10px rgba(124,58,237,0.25)',
                         }}
-                        animate={{x: ['-38%', '138%']}}
-                        transition={{duration: 2.6, repeat: Infinity, ease: 'linear', repeatDelay: 0.7}}
+                        animate={{x: ['-150%', '300%']}}
+                        transition={{duration: 2.6, repeat: Infinity, ease: 'linear', repeatDelay: 0.01}}
                     />
                 </div>
 
                 {/* Copyright */}
-                <div className="pb-6 sm:pb-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div className="pb-6 sm:pb-8 flex flex-col sm:flex-row items-center justify-between gap-3 w-full text-center sm:text-left">
                     <p className="text-white/20 text-xs sm:text-sm">
                         © {new Date().getFullYear()} xComify. All rights reserved.
                     </p>
-                    <div className="flex items-center gap-5">
-                        <Link to="/privacy"
-                              className="text-xs sm:text-sm text-white/20 hover:text-white/50 transition-colors">
+                    <div className="flex items-center gap-4 sm:gap-5">
+                        <Link to="/privacy" className="text-xs sm:text-sm text-white/20 hover:text-white/50 transition-colors">
                             Privacy Policy
                         </Link>
-                        <Link to="/terms"
-                              className="text-xs sm:text-sm text-white/20 hover:text-white/50 transition-colors">
+                        <Link to="/terms" className="text-xs sm:text-sm text-white/20 hover:text-white/50 transition-colors">
                             Terms of Service
                         </Link>
                     </div>
