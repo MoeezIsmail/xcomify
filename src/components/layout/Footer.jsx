@@ -2,6 +2,7 @@ import {useState, useRef} from 'react'
 import {Link} from 'react-router-dom'
 import {motion, useMotionValue, useSpring, useTransform} from 'framer-motion'
 import {ArrowUpRight, Send} from 'lucide-react'
+import { useSettings } from '../../context/SettingsContext'
 
 /* ── Social SVG icons ────────────────────────────────────────── */
 const TwitterIcon = () => (
@@ -54,17 +55,18 @@ const footerLinks = {
     ],
 }
 
-const socials = [
-    {icon: TwitterIcon, href: '#', label: 'Twitter'},
-    {icon: LinkedinIcon, href: '#', label: 'LinkedIn'},
-    {icon: InstagramIcon, href: '#', label: 'Instagram'},
-    {icon: YoutubeIcon, href: '#', label: 'YouTube'},
-]
-
 /* ── Footer ──────────────────────────────────────────────────── */
 export default function Footer() {
+    const { settings } = useSettings()
     const [email, setEmail] = useState('')
     const footerRef = useRef(null)
+
+    const socials = [
+        {icon: TwitterIcon, href: settings.twitter || '#', label: 'Twitter'},
+        {icon: LinkedinIcon, href: settings.linkedin || '#', label: 'LinkedIn'},
+        {icon: InstagramIcon, href: settings.instagram || '#', label: 'Instagram'},
+        {icon: YoutubeIcon, href: settings.youtube || '#', label: 'YouTube'},
+    ]
 
     /* spring-driven mouse glow */
     const rawX = useMotionValue(0.5)

@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import Lenis from 'lenis'
 import { Toaster } from 'react-hot-toast'
 
 import { AuthProvider, useAuth } from './context/AuthContext'
+import { SettingsProvider, useSettings } from './context/SettingsContext'
 
 import SplashScreen from './components/splash/SplashScreen'
 import CustomCursor from './components/layout/CustomCursor'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
+import ChatWidget from './components/ui/ChatWidget'
+import AdvertisementBanner from './components/ui/AdvertisementBanner'
 
 import Home from './pages/Home'
 import About from './pages/About'
@@ -29,6 +32,12 @@ import ApplicationsManager from './pages/admin/ApplicationsManager'
 import InquiriesManager from './pages/admin/InquiriesManager'
 import BlogManager from './pages/admin/BlogManager'
 import SiteSettings from './pages/admin/SiteSettings'
+import PortfolioManager from './pages/admin/PortfolioManager'
+import TeamManager from './pages/admin/TeamManager'
+import TestimonialsManager from './pages/admin/TestimonialsManager'
+import ServicesManager from './pages/admin/ServicesManager'
+import AdvertisementManager from './pages/admin/AdvertisementManager'
+import ProposalManager from './pages/admin/ProposalManager'
 
 function RequireAuth({ children }) {
   const { user, loading } = useAuth()
@@ -40,7 +49,29 @@ function RequireAuth({ children }) {
   return user ? children : <Navigate to="/admin/login" replace />
 }
 
+function MaintenancePage() {
+  const { settings } = useSettings()
+  return (
+    <div className="min-h-screen bg-[#07070C] flex items-center justify-center px-4">
+      <div className="text-center max-w-md">
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#00D4FF] to-[#7C3AED] flex items-center justify-center mx-auto mb-6 shadow-[0_0_40px_rgba(0,212,255,0.4)]">
+          <span className="text-white font-black text-2xl" style={{ fontFamily: 'Syne, sans-serif' }}>⚙</span>
+        </div>
+        <h1 className="text-3xl font-black text-white mb-3" style={{ fontFamily: 'Syne, sans-serif' }}>
+          Under Maintenance
+        </h1>
+        <p className="text-white/50 text-base leading-relaxed">
+          {settings.tagline || 'Premium eCommerce Management'} — we are making improvements and will be back shortly.
+        </p>
+      </div>
+    </div>
+  )
+}
+
 function PublicLayout({ children }) {
+  const { settings } = useSettings()
+  const isMaintenance = settings.maintenance_mode === '1' || settings.maintenance_mode === true
+  if (isMaintenance) return <MaintenancePage />
   return (
     <>
       <Navbar />
@@ -50,42 +81,58 @@ function PublicLayout({ children }) {
   )
 }
 
+function PublicWidgets() {
+  const location = useLocation()
+  const isAdmin = location.pathname.startsWith('/admin')
+  if (isAdmin) return null
+  return (
+    <>
+      <ChatWidget />
+      <AdvertisementBanner />
+    </>
+  )
+}
+
 function AppRoutes() {
   return (
-    <Routes>
-      {/* Public */}
-      <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
-      <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
-      <Route path="/services" element={<PublicLayout><Services /></PublicLayout>} />
-      <Route path="/portfolio" element={<PublicLayout><Portfolio /></PublicLayout>} />
-      <Route path="/careers" element={<PublicLayout><Careers /></PublicLayout>} />
-      <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
-      <Route path="/testimonials" element={<PublicLayout><Testimonials /></PublicLayout>} />
-      <Route path="/blog" element={<PublicLayout><Blog /></PublicLayout>} />
-      <Route path="/pricing" element={<PublicLayout><Pricing /></PublicLayout>} />
-      <Route path="/team" element={<PublicLayout><Team /></PublicLayout>} />
+    <>
+      <PublicWidgets />
+      <Routes>
+        {/* Public */}
+        <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
+        <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
+        <Route path="/services" element={<PublicLayout><Services /></PublicLayout>} />
+        <Route path="/portfolio" element={<PublicLayout><Portfolio /></PublicLayout>} />
+        <Route path="/careers" element={<PublicLayout><Careers /></PublicLayout>} />
+        <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
+        <Route path="/testimonials" element={<PublicLayout><Testimonials /></PublicLayout>} />
+        <Route path="/blog" element={<PublicLayout><Blog /></PublicLayout>} />
+        <Route path="/pricing" element={<PublicLayout><Pricing /></PublicLayout>} />
+        <Route path="/team" element={<PublicLayout><Team /></PublicLayout>} />
 
-      {/* Admin */}
-      <Route path="/admin/login" element={<AdminLogin />} />
-      <Route path="/admin" element={<RequireAuth><AdminLayout /></RequireAuth>}>
-        <Route index element={<Navigate to="/admin/dashboard" replace />} />
-        <Route path="dashboard" element={<AdminDashboard />} />
-        <Route path="applications" element={<ApplicationsManager />} />
-        <Route path="inquiries" element={<InquiriesManager />} />
-        <Route path="blog" element={<BlogManager />} />
-        <Route path="settings" element={<SiteSettings />} />
-        {/* Stub routes for other admin pages */}
-        <Route path="services" element={<AdminStub title="Services Manager" />} />
-        <Route path="portfolio" element={<AdminStub title="Portfolio Manager" />} />
-        <Route path="team" element={<AdminStub title="Team Manager" />} />
-        <Route path="testimonials" element={<AdminStub title="Testimonials Manager" />} />
-        <Route path="media" element={<AdminStub title="Media Library" />} />
-        <Route path="theme" element={<AdminStub title="Theme & Colors" />} />
-      </Route>
+        {/* Admin */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin" element={<RequireAuth><AdminLayout /></RequireAuth>}>
+          <Route index element={<Navigate to="/admin/dashboard" replace />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="applications" element={<ApplicationsManager />} />
+          <Route path="inquiries" element={<InquiriesManager />} />
+          <Route path="blog" element={<BlogManager />} />
+          <Route path="settings" element={<SiteSettings />} />
+          <Route path="services" element={<ServicesManager />} />
+          <Route path="portfolio" element={<PortfolioManager />} />
+          <Route path="team" element={<TeamManager />} />
+          <Route path="testimonials" element={<TestimonialsManager />} />
+          <Route path="advertisements" element={<AdvertisementManager />} />
+          <Route path="proposals" element={<ProposalManager />} />
+          <Route path="media" element={<AdminStub title="Media Library" />} />
+          <Route path="theme" element={<AdminStub title="Theme & Colors" />} />
+        </Route>
 
-      {/* Fallback */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
   )
 }
 
@@ -95,7 +142,7 @@ function AdminStub({ title }) {
       <div className="text-center">
         <div className="text-4xl mb-4">🚧</div>
         <h2 className="text-white font-bold text-xl mb-2">{title}</h2>
-        <p className="text-white/40 text-sm">Connected to the backend API. This manager is ready for PHP endpoint integration.</p>
+        <p className="text-white/40 text-sm">This manager is coming soon.</p>
       </div>
     </div>
   )
@@ -105,13 +152,10 @@ export default function App() {
   const [splashDone, setSplashDone] = useState(false)
 
   useEffect(() => {
-    // Skip splash on admin routes
     if (window.location.pathname.startsWith('/admin')) {
       setSplashDone(true)
       return
     }
-
-    // Check if already shown this session
     if (sessionStorage.getItem('splash_shown')) {
       setSplashDone(true)
       return
@@ -139,6 +183,7 @@ export default function App() {
 
   return (
     <AuthProvider>
+      <SettingsProvider>
       <BrowserRouter>
         <CustomCursor />
         <Toaster position="top-right" toastOptions={{
@@ -153,6 +198,7 @@ export default function App() {
 
         {splashDone && <AppRoutes />}
       </BrowserRouter>
+      </SettingsProvider>
     </AuthProvider>
   )
 }

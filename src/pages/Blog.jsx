@@ -1,86 +1,43 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Calendar, Clock, ArrowRight, Tag } from 'lucide-react'
-import ScrollReveal from '../components/ui/ScrollReveal'
 import CTASection from '../sections/home/CTASection'
-
-const posts = [
-  {
-    id: 1, slug: 'amazon-ppc-guide-2024',
-    title: 'The Complete Amazon PPC Guide for 2024: From Zero to Profitable',
-    excerpt: 'Everything you need to know about Amazon PPC in 2024: campaign structures, bid strategies, and the exact tactics we use to keep ACoS under 20%.',
-    category: 'Amazon PPC',
-    date: '2024-03-15',
-    readTime: '12 min',
-    author: 'James Chen',
-    featured: true,
-    tags: ['Amazon', 'PPC', 'Strategy'],
-  },
-  {
-    id: 2, slug: 'shopify-cvr-optimization',
-    title: '15 Conversion Rate Tactics That Took Our Client from 0.9% to 4.2%',
-    excerpt: 'The exact conversion rate optimizations we implemented for Luxe Candles Co that quadrupled their revenue in 60 days without increasing ad spend.',
-    category: 'Shopify CRO',
-    date: '2024-03-08',
-    readTime: '8 min',
-    author: 'Sarah Mitchell',
-    featured: false,
-    tags: ['Shopify', 'CRO', 'Revenue'],
-  },
-  {
-    id: 3, slug: 'etsy-algorithm-2024',
-    title: 'Decoding the Etsy Algorithm: What Actually Drives Organic Traffic',
-    excerpt: 'After analyzing 200+ Etsy shops, we identified the 7 ranking factors that matter most in 2024. The results surprised even us.',
-    category: 'Etsy SEO',
-    date: '2024-03-01',
-    readTime: '10 min',
-    author: 'Priya Sharma',
-    featured: false,
-    tags: ['Etsy', 'SEO', 'Algorithm'],
-  },
-  {
-    id: 4, slug: 'tiktok-shop-launch-strategy',
-    title: 'How We Sold 100K Units in 90 Days on TikTok Shop (Full Strategy)',
-    excerpt: 'The exact playbook we used to launch a brand from zero on TikTok Shop and hit $1.2M in revenue in 3 months. Including creator outreach templates.',
-    category: 'TikTok Shop',
-    date: '2024-02-22',
-    readTime: '15 min',
-    author: 'Marcus Webb',
-    featured: false,
-    tags: ['TikTok Shop', 'Launch', 'Influencer'],
-  },
-  {
-    id: 5, slug: 'ai-ecommerce-tools',
-    title: 'The 10 AI Tools That Are Changing eCommerce in 2024',
-    excerpt: 'From demand forecasting to automated copywriting, these AI tools are giving early adopters an unfair competitive advantage.',
-    category: 'AI & Tech',
-    date: '2024-02-14',
-    readTime: '9 min',
-    author: 'Marcus Webb',
-    featured: false,
-    tags: ['AI', 'Tools', 'Automation'],
-  },
-  {
-    id: 6, slug: 'walmart-marketplace-guide',
-    title: 'Walmart Marketplace in 2024: The Untapped Goldmine Most Sellers Ignore',
-    excerpt: 'Walmart Marketplace is growing faster than Amazon, with less competition and better margins. Here\'s how to capitalize before it gets crowded.',
-    category: 'Walmart',
-    date: '2024-02-06',
-    readTime: '11 min',
-    author: 'Sarah Mitchell',
-    featured: false,
-    tags: ['Walmart', 'Marketplace', 'Strategy'],
-  },
-]
-
-const categories = ['All', 'Amazon PPC', 'Shopify CRO', 'Etsy SEO', 'TikTok Shop', 'AI & Tech', 'Walmart']
+import { blogAPI } from '../lib/api'
 
 export default function Blog() {
+  const [posts, setPosts] = useState([])
+  const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('All')
+  const [categories, setCategories] = useState(['All'])
+
+  useEffect(() => {
+    blogAPI.getAll({ status: 'published' })
+      .then((res) => {
+        const data = res.data?.data || res.data || []
+        setPosts(data)
+        const cats = ['All', ...new Set(data.map((p) => p.category).filter(Boolean))]
+        setCategories(cats)
+      })
+      .catch(() => setPosts([]))
+      .finally(() => setLoading(false))
+  }, [])
+
   const filtered = filter === 'All' ? posts : posts.filter((p) => p.category === filter)
-  const featured = posts.find((p) => p.featured)
-  const rest = posts.filter((p) => !p.featured)
+  const featured = posts.find((p) => p.is_featured || p.featured)
+  const rest = featured ? posts.filter((p) => p.id !== featured.id) : posts
+
+  const SkeletonCard = () => (
+    <div className="border border-white/8 rounded-2xl overflow-hidden bg-white/2 animate-pulse">
+      <div className="h-44 bg-white/5" />
+      <div className="p-5 space-y-3">
+        <div className="h-3 bg-white/10 rounded w-1/3" />
+        <div className="h-4 bg-white/10 rounded w-4/5" />
+        <div className="h-3 bg-white/5 rounded w-full" />
+        <div className="h-3 bg-white/5 rounded w-2/3" />
+      </div>
+    </div>
+  )
 
   return (
     <main className="pt-24">
@@ -99,13 +56,17 @@ export default function Blog() {
       </section>
 
       {/* Featured post */}
-      {featured && (
+      {!loading && featured && (
         <section className="py-6 sm:py-10 lg:py-12 bg-[#050508]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
               className="group rounded-3xl border border-white/8 overflow-hidden hover:border-white/20 transition-all duration-300 grid md:grid-cols-2 bg-white/2">
               <div className="h-64 md:h-auto bg-gradient-to-br from-[#00D4FF]/20 to-[#7C3AED]/20 flex items-center justify-center relative">
-                <span className="text-8xl opacity-30">📊</span>
+                {featured.image_path ? (
+                  <img src={featured.image_path} alt={featured.title} className="absolute inset-0 w-full h-full object-cover" />
+                ) : (
+                  <span className="text-8xl opacity-30">📊</span>
+                )}
                 <div className="absolute inset-0 bg-gradient-to-br from-[#00D4FF]/10 to-transparent" />
                 <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-[#00D4FF]/20 border border-[#00D4FF]/30 text-xs text-[#00D4FF] font-medium">
                   Featured
@@ -120,8 +81,8 @@ export default function Blog() {
                 <p className="text-white/50 text-sm leading-relaxed mb-6">{featured.excerpt}</p>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4 text-xs text-white/30">
-                    <span className="flex items-center gap-1"><Calendar size={11} /> {featured.date}</span>
-                    <span className="flex items-center gap-1"><Clock size={11} /> {featured.readTime} read</span>
+                    <span className="flex items-center gap-1"><Calendar size={11} /> {featured.created_at?.split('T')[0] || featured.date}</span>
+                    {featured.read_time && <span className="flex items-center gap-1"><Clock size={11} /> {featured.read_time} read</span>}
                   </div>
                   <Link to={`/blog/${featured.slug}`} className="flex items-center gap-1.5 text-sm text-[#00D4FF] font-semibold group-hover:gap-2.5 transition-all">
                     Read more <ArrowRight size={14} />
@@ -134,59 +95,77 @@ export default function Blog() {
       )}
 
       {/* Filter */}
-      <section className="py-8 bg-[#050508] sticky top-20 z-50 border-b border-white/8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex flex-wrap gap-2">
-            {categories.map((cat) => (
-              <button key={cat} onClick={() => setFilter(cat)}
-                className={`px-4 py-2 rounded-lg text-xs font-medium transition-all ${
-                  filter === cat ? 'bg-[#00D4FF] text-[#0A0A0F]' : 'border border-white/15 text-white/50 hover:text-white'
-                }`}>
-                {cat}
-              </button>
-            ))}
+      {!loading && categories.length > 1 && (
+        <section className="py-8 bg-[#050508] sticky top-20 z-50 border-b border-white/8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="flex flex-wrap gap-2">
+              {categories.map((cat) => (
+                <button key={cat} onClick={() => setFilter(cat)}
+                  className={`px-4 py-2 rounded-lg text-xs font-medium transition-all ${
+                    filter === cat ? 'bg-[#00D4FF] text-[#0A0A0F]' : 'border border-white/15 text-white/50 hover:text-white'
+                  }`}>
+                  {cat}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Grid */}
       <section className="py-8 sm:py-12 lg:py-16 bg-[#050508]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {(filter === 'All' ? rest : filtered).map((post, i) => (
-              <motion.article
-                key={post.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                className="group border border-white/8 rounded-2xl overflow-hidden hover:border-white/20 transition-all duration-300 bg-white/2"
-              >
-                <div className="h-44 bg-gradient-to-br from-white/5 to-white/2 flex items-center justify-center relative overflow-hidden">
-                  <span className="text-5xl opacity-40">📝</span>
-                  <div className="absolute top-3 left-3 px-2 py-1 rounded-md text-xs font-medium bg-[#7C3AED]/20 text-[#A78BFA] border border-[#7C3AED]/30">
-                    {post.category}
+          {loading ? (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => <SkeletonCard key={i} />)}
+            </div>
+          ) : filtered.length === 0 && !featured ? (
+            <div className="text-center py-24">
+              <div className="text-5xl mb-4">📝</div>
+              <h3 className="text-white font-bold text-xl mb-2" style={{ fontFamily: 'Syne, sans-serif' }}>No posts yet</h3>
+              <p className="text-white/40 text-sm">Check back soon for eCommerce insights and strategies.</p>
+            </div>
+          ) : (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {(filter === 'All' ? rest : filtered).map((post, i) => (
+                <motion.article
+                  key={post.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08 }}
+                  className="group border border-white/8 rounded-2xl overflow-hidden hover:border-white/20 transition-all duration-300 bg-white/2"
+                >
+                  <div className="h-44 bg-gradient-to-br from-white/5 to-white/2 flex items-center justify-center relative overflow-hidden">
+                    {post.image_path ? (
+                      <img src={post.image_path} alt={post.title} className="absolute inset-0 w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-5xl opacity-40">📝</span>
+                    )}
+                    <div className="absolute top-3 left-3 px-2 py-1 rounded-md text-xs font-medium bg-[#7C3AED]/20 text-[#A78BFA] border border-[#7C3AED]/30">
+                      {post.category}
+                    </div>
                   </div>
-                </div>
-                <div className="p-5">
-                  <div className="flex items-center gap-3 mb-3 text-xs text-white/30">
-                    <span className="flex items-center gap-1"><Calendar size={10} /> {post.date}</span>
-                    <span className="flex items-center gap-1"><Clock size={10} /> {post.readTime}</span>
+                  <div className="p-5">
+                    <div className="flex items-center gap-3 mb-3 text-xs text-white/30">
+                      <span className="flex items-center gap-1"><Calendar size={10} /> {post.created_at?.split('T')[0] || post.date}</span>
+                      {post.read_time && <span className="flex items-center gap-1"><Clock size={10} /> {post.read_time}</span>}
+                    </div>
+                    <h3 className="text-white font-bold text-lg leading-tight mb-3 group-hover:text-[#00D4FF] transition-colors" style={{ fontFamily: 'Syne, sans-serif' }}>
+                      {post.title}
+                    </h3>
+                    <p className="text-white/40 text-sm leading-relaxed mb-4 line-clamp-2">{post.excerpt}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-white/30">{post.author ? `By ${post.author}` : ''}</span>
+                      <Link to={`/blog/${post.slug}`} className="text-xs text-[#00D4FF] flex items-center gap-1 hover:gap-2 transition-all">
+                        Read <ArrowRight size={12} />
+                      </Link>
+                    </div>
                   </div>
-                  <h3 className="text-white font-bold text-lg leading-tight mb-3 group-hover:text-[#00D4FF] transition-colors" style={{ fontFamily: 'Syne, sans-serif' }}>
-                    {post.title}
-                  </h3>
-                  <p className="text-white/40 text-sm leading-relaxed mb-4 line-clamp-2">{post.excerpt}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-white/30">By {post.author}</span>
-                    <Link to={`/blog/${post.slug}`} className="text-xs text-[#00D4FF] flex items-center gap-1 hover:gap-2 transition-all">
-                      Read <ArrowRight size={12} />
-                    </Link>
-                  </div>
-                </div>
-              </motion.article>
-            ))}
-          </div>
+                </motion.article>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

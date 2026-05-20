@@ -25,6 +25,12 @@ class AuthMiddleware {
         return $user;
     }
 
+    public function optionalAuth(): ?array {
+        $header = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+        if (!preg_match('/^Bearer (.+)$/', $header, $m)) return null;
+        return $this->verifyToken($m[1]);
+    }
+
     public function generateToken(array $payload): string {
         $header  = base64url_encode(json_encode(['alg' => 'HS256', 'typ' => 'JWT']));
         $payload['exp'] = time() + 86400 * 7; // 7 days

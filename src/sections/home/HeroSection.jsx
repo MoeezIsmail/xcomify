@@ -3,6 +3,7 @@ import { motion, useMotionValue, useSpring, useMotionTemplate } from 'framer-mot
 import { ArrowRight, Play, Sparkles } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import MagneticButton from '../../components/ui/MagneticButton'
+import { useSettings } from '../../context/SettingsContext'
 
 function WordReveal({ children, delay = 0, className = '' }) {
   return (
@@ -66,8 +67,15 @@ const ORBITAL_RINGS = [
 ]
 
 export default function HeroSection() {
+  const { settings } = useSettings()
   const canvasRef = useRef(null)
   const sectionRef = useRef(null)
+
+  // Split headline into 3 animated lines: [first words] | [gradient word] | [last word]
+  const headlineWords = (settings.hero_headline || 'Scale Your eCommerce Empire').trim().split(/\s+/)
+  const line1 = headlineWords.length > 2 ? headlineWords.slice(0, headlineWords.length - 2) : headlineWords.slice(0, 1)
+  const line2 = headlineWords.length > 1 ? headlineWords[headlineWords.length - 2] : headlineWords[0]
+  const line3 = headlineWords.length > 2 ? headlineWords[headlineWords.length - 1] : ''
 
   const rawX = useMotionValue(-500)
   const rawY = useMotionValue(-500)
@@ -360,37 +368,42 @@ export default function HeroSection() {
 
         {/* Headline — editorial reveal */}
         <div className="mb-2" style={{ perspective: '1200px' }}>
-          {/* Line 1: "Scale Your" */}
+          {/* Line 1: first words */}
           <div className="flex flex-wrap justify-center gap-4 mb-1">
             <h1
               className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black leading-none tracking-tight text-white"
               style={{ fontFamily: 'Syne, sans-serif' }}
             >
-              <WordReveal delay={0.55}>Scale</WordReveal>
-              {' '}
-              <WordReveal delay={0.68}>Your</WordReveal>
+              {line1.map((word, i) => (
+                <span key={i}>
+                  {i > 0 && ' '}
+                  <WordReveal delay={0.55 + i * 0.13}>{word}</WordReveal>
+                </span>
+              ))}
             </h1>
           </div>
 
-          {/* Line 2: "eCommerce" — char by char */}
+          {/* Line 2: gradient word (char by char) */}
           <div className="flex justify-center mb-1">
             <h1
               className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black leading-none tracking-tight gradient-text"
               style={{ fontFamily: 'Syne, sans-serif' }}
             >
-              <CharReveal text="eCommerce" delay={0.78} />
+              <CharReveal text={line2} delay={0.78} />
             </h1>
           </div>
 
-          {/* Line 3: "Empire" */}
-          <div className="flex justify-center">
-            <h1
-              className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black leading-none tracking-tight text-white"
-              style={{ fontFamily: 'Syne, sans-serif' }}
-            >
-              <WordReveal delay={1.1}>Empire</WordReveal>
-            </h1>
-          </div>
+          {/* Line 3: last word */}
+          {line3 && (
+            <div className="flex justify-center">
+              <h1
+                className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black leading-none tracking-tight text-white"
+                style={{ fontFamily: 'Syne, sans-serif' }}
+              >
+                <WordReveal delay={1.1}>{line3}</WordReveal>
+              </h1>
+            </div>
+          )}
         </div>
 
         {/* Rule after headline */}
@@ -416,8 +429,7 @@ export default function HeroSection() {
           transition={{ delay: 1.4, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="text-white/50 text-sm sm:text-base md:text-xl max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed"
         >
-          Full-service eCommerce management across Amazon, eBay, Etsy, Shopify, Walmart & TikTok Shop.
-          We handle everything — you collect the profits.
+          {settings.hero_subline || 'Full-service eCommerce management across Amazon, eBay, Etsy, Shopify, Walmart & TikTok Shop. We handle everything — you collect the profits.'}
         </motion.p>
 
         {/* CTA buttons */}
@@ -432,7 +444,7 @@ export default function HeroSection() {
               to="/contact"
               className="group flex items-center gap-2.5 px-8 py-4 rounded-xl bg-gradient-to-r from-[#00D4FF] to-[#7C3AED] text-white font-semibold text-base shadow-[0_0_40px_rgba(0,212,255,0.3)] hover:shadow-[0_0_60px_rgba(0,212,255,0.5)] transition-shadow duration-300"
             >
-              Get Free Consultation
+              {settings.cta_text || 'Get Free Consultation'}
               <ArrowRight size={18} className="transition-transform duration-200 group-hover:translate-x-1" />
             </Link>
           </MagneticButton>

@@ -12,6 +12,10 @@ require_once __DIR__ . '/controllers/PortfolioController.php';
 require_once __DIR__ . '/controllers/TestimonialController.php';
 require_once __DIR__ . '/controllers/SettingsController.php';
 require_once __DIR__ . '/controllers/MediaController.php';
+require_once __DIR__ . '/controllers/AiController.php';
+require_once __DIR__ . '/controllers/ChatController.php';
+require_once __DIR__ . '/controllers/ProposalController.php';
+require_once __DIR__ . '/controllers/AdvertisementController.php';
 
 // Parse URL
 $uri    = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -126,7 +130,10 @@ try {
 
         case 'settings':
             $ctrl = new SettingsController($db);
-            if ($method === 'GET')                    respond(200, $ctrl->get());
+            if ($method === 'GET') {
+                $user = $auth->optionalAuth();
+                respond(200, $user ? $ctrl->get() : $ctrl->getPublic());
+            }
             $auth->requireAuth();
             if ($method === 'PUT')                    respond(200, $ctrl->update(requestBody()));
             respond(404, ['error' => 'Not found']);
@@ -137,6 +144,38 @@ try {
             if ($method === 'POST' && $action === 'upload') respond(201, $ctrl->upload());
             if ($method === 'GET')                    respond(200, $ctrl->getAll());
             if ($method === 'DELETE' && $id)          respond(200, $ctrl->delete($id));
+            respond(404, ['error' => 'Not found']);
+
+        case 'ai':
+            $ctrl = new AiController($db);
+            if ($method === 'GET' && $action === 'criteria') respond(200, $ctrl->getCriteria());
+            // /ai/analyze/{id} — segments[1]='analyze', segments[2]=id
+            if ($method === 'POST' && ($segments[1] ?? '') === 'analyze' && isset($segments[2]) && is_numeric($segments[2]))
+                respond(200, $ctrl->analyzeApplication((int)$segments[2]));
+            $auth->requireAuth();
+            if ($method === 'PUT' && $action === 'criteria') respond(200, $ctrl->saveCriteria(requestBody()));
+            respond(404, ['error' => 'Not found']);
+
+        case 'chat':
+            $ctrl = new ChatController($db);
+            if ($method === 'POST') respond(200, $ctrl->chat(requestBody()));
+            respond(404, ['error' => 'Not found']);
+
+        case 'proposals':
+            $ctrl = new ProposalController($db);
+            $auth->requireAuth();
+            if ($method === 'POST' && $action === 'generate') respond(200, $ctrl->generate(requestBody()));
+            if ($method === 'POST' && $action === 'send')     respond(200, $ctrl->sendEmail(requestBody()));
+            respond(404, ['error' => 'Not found']);
+
+        case 'advertisements':
+            $ctrl = new AdvertisementController($db);
+            if ($method === 'GET' && $action === 'active') respond(200, $ctrl->getActive());
+            $auth->requireAuth();
+            if ($method === 'GET')           respond(200, $ctrl->getAll());
+            if ($method === 'POST')          respond(201, $ctrl->create(requestBody()));
+            if ($method === 'PUT' && $id)    respond(200, $ctrl->update($id, requestBody()));
+            if ($method === 'DELETE' && $id) respond(200, $ctrl->delete($id));
             respond(404, ['error' => 'Not found']);
 
         default:

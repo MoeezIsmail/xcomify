@@ -17,8 +17,15 @@ class BlogController {
 
         $stmt = $this->db->prepare("SELECT * FROM blogs WHERE $where ORDER BY created_at DESC LIMIT ? OFFSET ?");
         $stmt->execute($params);
-        $data  = $stmt->fetchAll();
-        $total = (int)$this->db->query("SELECT COUNT(*) FROM blogs WHERE $where")->fetchColumn();
+        $data = $stmt->fetchAll();
+
+        if ($status === 'all') {
+            $total = (int)$this->db->query('SELECT COUNT(*) FROM blogs')->fetchColumn();
+        } else {
+            $cs = $this->db->prepare('SELECT COUNT(*) FROM blogs WHERE status = ?');
+            $cs->execute([$status]);
+            $total = (int)$cs->fetchColumn();
+        }
 
         return compact('data', 'total', 'page', 'limit');
     }

@@ -4,15 +4,16 @@ import { Mail, Phone, MapPin, Clock, Check, MessageSquare, Send } from 'lucide-r
 import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
 import ScrollReveal from '../components/ui/ScrollReveal'
-
-const contactInfo = [
-  { icon: Mail, label: 'Email Us', value: 'hello@xcomify.com', href: 'mailto:hello@xcomify.com' },
-  { icon: Phone, label: 'Call Us', value: '+1 (234) 567-890', href: 'tel:+1234567890' },
-  { icon: MapPin, label: 'Visit Us', value: 'New York, NY 10001', href: '#' },
-  { icon: Clock, label: 'Business Hours', value: 'Mon–Fri, 9AM–6PM EST', href: null },
-]
+import { useSettings } from '../context/SettingsContext'
 
 export default function Contact() {
+  const { settings } = useSettings()
+  const contactInfo = [
+    { icon: Mail, label: 'Email Us', value: settings.email || 'hello@xcomify.com', href: `mailto:${settings.email || 'hello@xcomify.com'}` },
+    { icon: Phone, label: 'Call Us', value: settings.phone || '+1 (234) 567-890', href: `tel:${(settings.phone || '').replace(/\D/g, '')}` },
+    { icon: MapPin, label: 'Visit Us', value: settings.address || 'New York, NY 10001', href: '#' },
+    { icon: Clock, label: 'Business Hours', value: 'Mon–Fri, 9AM–6PM EST', href: null },
+  ]
   const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', platform: '', message: '' })
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)

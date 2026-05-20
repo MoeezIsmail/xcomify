@@ -93,3 +93,26 @@ export const mediaAPI = {
   getAll: () => api.get('/media'),
   delete: (id) => api.delete(`/media/${id}`),
 }
+
+export const advertisementAPI = {
+  getActive: () => api.get('/advertisements/active'),
+  getAll: () => api.get('/advertisements'),
+  create: (data) => api.post('/advertisements', data),
+  update: (id, data) => api.put(`/advertisements/${id}`, data),
+  delete: (id) => api.delete(`/advertisements/${id}`),
+}
+
+export const chatAPI = {
+  send: (message) => api.post('/chat', { message }),
+}
+
+export const proposalAPI = {
+  generate: (data) => api.post('/proposals/generate', data),
+  send: (data) => api.post('/proposals/send', data),
+}
+
+export const aiAPI = {
+  getCriteria: () => api.get('/ai/criteria'),
+  saveCriteria: (data) => api.put('/ai/criteria', data),
+  analyzeCV: (id) => api.post(`/ai/analyze/${id}`),
+}

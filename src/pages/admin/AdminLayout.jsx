@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard, Users, MessageSquare, FileText, Briefcase,
   Star, Image, Settings, LogOut, Menu, X, Globe, Palette,
-  Package, ChevronRight, Bell
+  Package, ChevronRight, Bell, Megaphone, Wand2
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 
@@ -17,6 +17,8 @@ const navItems = [
   { label: 'Portfolio', href: '/admin/portfolio', icon: Package },
   { label: 'Team', href: '/admin/team', icon: Users },
   { label: 'Testimonials', href: '/admin/testimonials', icon: Star },
+  { label: 'Advertisements', href: '/admin/advertisements', icon: Megaphone },
+  { label: 'Proposals', href: '/admin/proposals', icon: Wand2 },
   { label: 'Media Library', href: '/admin/media', icon: Image },
   { label: 'Site Settings', href: '/admin/settings', icon: Globe },
   { label: 'Theme & Colors', href: '/admin/theme', icon: Palette },

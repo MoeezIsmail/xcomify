@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, ChevronDown } from 'lucide-react'
+import { useSettings } from '../../context/SettingsContext'
 
 const navLinks = [
   { label: 'Home', href: '/' },
@@ -25,6 +26,8 @@ const navLinks = [
 ]
 
 export default function Navbar() {
+  const { settings } = useSettings()
+  const siteName = settings.site_name || 'xComify'
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState(null)
@@ -60,7 +63,7 @@ export default function Navbar() {
               <span className="text-white font-black text-base leading-none" style={{ fontFamily: 'Syne, sans-serif' }}>X</span>
             </div>
             <span className="text-xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
-              x<span className="text-[#00D4FF]">Comify</span>
+              {siteName.charAt(0)}<span className="text-[#00D4FF]">{siteName.slice(1)}</span>
             </span>
           </Link>
 
