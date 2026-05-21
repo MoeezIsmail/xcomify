@@ -18,6 +18,7 @@ require_once __DIR__ . '/controllers/AiController.php';
 require_once __DIR__ . '/controllers/ChatController.php';
 require_once __DIR__ . '/controllers/ProposalController.php';
 require_once __DIR__ . '/controllers/AdvertisementController.php';
+require_once __DIR__ . '/controllers/NotificationController.php';
 
 // Parse URL
 $uri    = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -178,6 +179,14 @@ try {
             if ($method === 'POST')          respond(201, $ctrl->create(requestBody()));
             if ($method === 'PUT' && $id)    respond(200, $ctrl->update($id, requestBody()));
             if ($method === 'DELETE' && $id) respond(200, $ctrl->delete($id));
+            respond(404, ['error' => 'Not found']);
+
+        case 'notifications':
+            $ctrl = new NotificationController();
+            $auth->requireAuth();
+            if ($method === 'GET' && $action === 'log')      respond(200, $ctrl->getLog());
+            if ($method === 'GET')                           respond(200, $ctrl->getAll());
+            if ($method === 'PUT' && $action === 'read-all') respond(200, $ctrl->markAllRead());
             respond(404, ['error' => 'Not found']);
 
         default:

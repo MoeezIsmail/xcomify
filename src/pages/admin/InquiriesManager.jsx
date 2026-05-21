@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Search, Mail, Phone, Trash2, Check, Circle } from 'lucide-react'
+import { Search, Mail, Phone, Trash2 } from 'lucide-react'
 import { contactAPI } from '../../lib/api'
+import { notifyNotificationsChanged } from '../../lib/dates'
 import toast from 'react-hot-toast'
 
 const mockInquiries = [
@@ -26,14 +27,20 @@ export default function InquiriesManager() {
   )
 
   const markRead = async (id) => {
-    try { await contactAPI.markRead(id) } catch {}
+    try { await contactAPI.markRead(id) } catch {
+      // Keep local read state responsive even if the row was already updated elsewhere.
+    }
     setInquiries((prev) => prev.map((i) => i.id === id ? { ...i, is_read: true } : i))
+    notifyNotificationsChanged()
   }
 
   const deleteInquiry = async (id) => {
     if (!confirm('Delete this inquiry?')) return
-    try { await contactAPI.delete(id) } catch {}
+    try { await contactAPI.delete(id) } catch {
+      // Local deletion keeps the admin UI responsive if the record was already removed.
+    }
     setInquiries((prev) => prev.filter((i) => i.id !== id))
+    notifyNotificationsChanged()
     toast.success('Inquiry deleted')
     if (selected?.id === id) setSelected(null)
   }

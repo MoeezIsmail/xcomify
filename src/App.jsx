@@ -38,6 +38,8 @@ import TestimonialsManager from './pages/admin/TestimonialsManager'
 import ServicesManager from './pages/admin/ServicesManager'
 import AdvertisementManager from './pages/admin/AdvertisementManager'
 import ProposalManager from './pages/admin/ProposalManager'
+import MediaLibrary from './pages/admin/MediaLibrary'
+import NotificationLog from './pages/admin/NotificationLog'
 
 function RequireAuth({ children }) {
   const { user, loading } = useAuth()
@@ -145,7 +147,8 @@ function AppRoutes() {
           <Route path="testimonials" element={<TestimonialsManager />} />
           <Route path="advertisements" element={<AdvertisementManager />} />
           <Route path="proposals" element={<ProposalManager />} />
-          <Route path="media" element={<AdminStub title="Media Library" />} />
+          <Route path="media" element={<MediaLibrary />} />
+          <Route path="notifications" element={<NotificationLog />} />
           <Route path="theme" element={<AdminStub title="Theme & Colors" />} />
         </Route>
 

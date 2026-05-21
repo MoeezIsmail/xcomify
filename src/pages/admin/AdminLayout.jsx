@@ -4,9 +4,11 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard, Users, MessageSquare, FileText, Briefcase,
   Star, Image, Settings, LogOut, Menu, X, Globe, Palette,
-  Package, ChevronRight, Bell, Megaphone, Wand2
+  Package, ChevronRight, Bell, Megaphone, Wand2, BellRing
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
+import { useNotifications } from '../../hooks/useNotifications'
+import NotificationsDropdown from '../../components/admin/NotificationsDropdown'
 
 const navItems = [
   { label: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
@@ -19,16 +21,19 @@ const navItems = [
   { label: 'Testimonials', href: '/admin/testimonials', icon: Star },
   { label: 'Advertisements', href: '/admin/advertisements', icon: Megaphone },
   { label: 'Proposals', href: '/admin/proposals', icon: Wand2 },
-  { label: 'Media Library', href: '/admin/media', icon: Image },
+  { label: 'Media Library',       href: '/admin/media',          icon: Image },
+  { label: 'Notification Log',    href: '/admin/notifications',  icon: BellRing },
   { label: 'Site Settings', href: '/admin/settings', icon: Globe },
   { label: 'Theme & Colors', href: '/admin/theme', icon: Palette },
 ]
 
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [notifOpen, setNotifOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
   const { user, logout } = useAuth()
+  const { notifications, newCount, loading, markAllRead, refresh, requestPermission } = useNotifications()
 
   const handleLogout = () => {
     logout()
@@ -77,7 +82,17 @@ export default function AdminLayout() {
                     >
                       <item.icon size={16} />
                       <span className="flex-1">{item.label}</span>
-                      {active && <ChevronRight size={12} />}
+                      {(() => {
+                        const badge =
+                          item.href === '/admin/inquiries'    ? notifications.filter(n => n.type === 'contact'     && n.is_new).length :
+                          item.href === '/admin/applications' ? notifications.filter(n => n.type === 'application' && n.is_new).length : 0
+                        return badge > 0 ? (
+                          <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold text-white"
+                            style={{ background: 'linear-gradient(135deg, #00D4FF, #7C3AED)' }}>
+                            {badge}
+                          </span>
+                        ) : active ? <ChevronRight size={12} /> : null
+                      })()}
                     </Link>
                   )
                 })}
@@ -118,10 +133,49 @@ export default function AdminLayout() {
             {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
           <div className="flex-1" />
-          <button className="relative w-9 h-9 rounded-lg border border-white/10 flex items-center justify-center text-white/50 hover:text-white transition-colors">
-            <Bell size={16} />
-            <div className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#00D4FF]" />
-          </button>
+
+          {/* Notification bell */}
+          <div className="relative">
+            <button
+              onClick={() => {
+                setNotifOpen((o) => !o)
+                requestPermission()
+              }}
+              className={`relative w-9 h-9 rounded-lg border flex items-center justify-center transition-all ${
+                notifOpen
+                  ? 'border-[#00D4FF]/40 text-[#00D4FF] bg-[#00D4FF]/8'
+                  : 'border-white/10 text-white/50 hover:text-white hover:border-white/20'
+              }`}
+            >
+              <motion.div
+                animate={newCount > 0 ? { rotate: [0, -12, 12, -8, 8, 0] } : {}}
+                transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 4 }}
+              >
+                <Bell size={16} />
+              </motion.div>
+
+              {newCount > 0 && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="absolute -top-1 -right-1 min-w-[16px] h-4 rounded-full flex items-center justify-center text-[9px] font-bold text-white px-1"
+                  style={{ background: 'linear-gradient(135deg, #00D4FF, #7C3AED)' }}
+                >
+                  {newCount > 99 ? '99+' : newCount}
+                </motion.div>
+              )}
+            </button>
+
+            <NotificationsDropdown
+              open={notifOpen}
+              onClose={() => setNotifOpen(false)}
+              notifications={notifications}
+              newCount={newCount}
+              loading={loading}
+              onMarkAllRead={markAllRead}
+              onRefresh={refresh}
+            />
+          </div>
           <Link
             to="/"
             target="_blank"

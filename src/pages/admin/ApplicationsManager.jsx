@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, Download, Eye, Trash2, CheckCircle, Clock, XCircle, FileText, Brain, X, Settings2 } from 'lucide-react'
 import { applicationsAPI, aiAPI } from '../../lib/api'
 import { useSettings } from '../../context/SettingsContext'
 import { callHF } from '../../lib/huggingface'
+import { notifyNotificationsChanged } from '../../lib/dates'
 import toast from 'react-hot-toast'
 
 const statusConfig = {
@@ -31,12 +32,7 @@ export default function ApplicationsManager() {
   })
   const [savingCriteria, setSavingCriteria] = useState(false)
 
-  useEffect(() => {
-    loadApps()
-    loadCriteria()
-  }, [])
-
-  const loadApps = async () => {
+  const loadApps = useCallback(async () => {
     setLoading(true)
     try {
       const res = await applicationsAPI.getAll()
@@ -47,14 +43,24 @@ export default function ApplicationsManager() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
-  const loadCriteria = async () => {
+  const loadCriteria = useCallback(async () => {
     try {
       const res = await aiAPI.getCriteria()
       if (res.data) setCriteria(res.data)
-    } catch {}
-  }
+    } catch {
+      // Keep default criteria when the optional backend settings are unavailable.
+    }
+  }, [])
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      loadApps()
+      loadCriteria()
+    }, 0)
+    return () => clearTimeout(timer)
+  }, [loadApps, loadCriteria])
 
   const filtered = apps.filter((a) => {
     const matchSearch = !search || a.full_name?.toLowerCase().includes(search.toLowerCase()) || a.email?.toLowerCase().includes(search.toLowerCase())
@@ -67,6 +73,7 @@ export default function ApplicationsManager() {
       await applicationsAPI.update(id, { status })
       setApps((prev) => prev.map((a) => a.id === id ? { ...a, status } : a))
       if (selected?.id === id) setSelected((p) => ({ ...p, status }))
+      notifyNotificationsChanged()
       toast.success(`Status updated to ${status}`)
     } catch {
       toast.error('Failed to update status')
@@ -77,8 +84,11 @@ export default function ApplicationsManager() {
     if (!confirm('Delete this application?')) return
     try {
       await applicationsAPI.delete(id)
-    } catch {}
+    } catch {
+      // Local deletion keeps the admin UI responsive if the record was already removed.
+    }
     setApps((prev) => prev.filter((a) => a.id !== id))
+    notifyNotificationsChanged()
     toast.success('Application deleted')
     if (selected?.id === id) setSelected(null)
   }

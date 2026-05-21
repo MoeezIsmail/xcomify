@@ -102,6 +102,12 @@ export const advertisementAPI = {
   delete: (id) => api.delete(`/advertisements/${id}`),
 }
 
+export const notificationsAPI = {
+  getAll:      () => api.get('/notifications'),
+  getLog:      (page = 1) => api.get('/notifications/log', { params: { page } }),
+  markAllRead: () => api.put('/notifications/read-all'),
+}
+
 export const chatAPI = {
   send: (message) => api.post('/chat', { message }),
 }
