@@ -3,10 +3,10 @@ class AdvertisementController {
     public function __construct() {}
 
     public function getActive(): array {
-        $row = R::getRow(
-            "SELECT * FROM advertisements WHERE is_active = 1 AND (starts_at IS NULL OR starts_at <= CURRENT_TIMESTAMP) AND (ends_at IS NULL OR ends_at >= CURRENT_TIMESTAMP) ORDER BY created_at DESC LIMIT 1"
+        $data = R::getAll(
+            "SELECT * FROM advertisements WHERE is_active = 1 AND (starts_at IS NULL OR starts_at <= CURRENT_TIMESTAMP) AND (ends_at IS NULL OR ends_at >= CURRENT_TIMESTAMP) ORDER BY created_at ASC"
         );
-        return $row ?: [];
+        return ['data' => $data ?: []];
     }
 
     public function getAll(): array {
