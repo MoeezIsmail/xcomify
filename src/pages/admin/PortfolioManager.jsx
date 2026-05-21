@@ -106,7 +106,7 @@ export default function PortfolioManager() {
           className="w-full pl-9 pr-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#00D4FF]/50" />
       </div>
 
-      <div className="border border-white/8 rounded-xl overflow-hidden bg-white/2">
+      <div className="border border-white/8 rounded-xl overflow-x-auto bg-white/2">
         {loading ? (
           <div className="flex items-center justify-center py-16">
             <div className="w-6 h-6 rounded-full border-2 border-[#00D4FF] border-t-transparent animate-spin" />

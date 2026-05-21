@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Save, Globe, Mail, Phone, MapPin, Eye, EyeOff, Loader2, CheckCircle, XCircle, Wifi } from 'lucide-react'
+import { Save, Globe, Mail, Phone, MapPin, Eye, EyeOff, Loader2, CheckCircle, XCircle, Wifi, Server } from 'lucide-react'
 import { settingsAPI } from '../../lib/api'
 import { useSettings } from '../../context/SettingsContext'
 import { testHFConnection, HF_URL } from '../../lib/huggingface'
@@ -25,6 +25,13 @@ const initialSettings = {
   maintenance_mode: false,
   animations_enabled: true,
   dark_mode: true,
+  smtp_host: '',
+  smtp_port: '587',
+  smtp_encryption: 'tls',
+  smtp_user: '',
+  smtp_pass: '',
+  smtp_from_name: 'xComify',
+  smtp_from_email: '',
 }
 
 const inputCls = 'w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#00D4FF]/50 transition-colors'
@@ -69,6 +76,7 @@ export default function SiteSettings() {
   const [tab, setTab] = useState('general')
   const [hfToken, setHfToken] = useState('')
   const [showToken, setShowToken] = useState(false)
+  const [showSmtpPass, setShowSmtpPass] = useState(false)
   const [savingToken, setSavingToken] = useState(false)
   const [testing, setTesting] = useState(false)
   const [testResult, setTestResult] = useState(null)
@@ -133,6 +141,7 @@ export default function SiteSettings() {
     { id: 'content', label: 'Homepage Content' },
     { id: 'integrations', label: 'Integrations' },
     { id: 'ai', label: 'AI Integration' },
+    { id: 'email', label: 'Email (SMTP)' },
     { id: 'advanced', label: 'Advanced' },
   ]
 
@@ -154,10 +163,10 @@ export default function SiteSettings() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 border-b border-white/8 pb-1">
+      <div className="flex gap-1 mb-6 border-b border-white/8 pb-1 overflow-x-auto scrollbar-none">
         {tabs.map((t) => (
           <button key={t.id} onClick={() => setTab(t.id)}
-            className={`px-4 py-2 rounded-lg text-xs font-medium transition-all ${
+            className={`shrink-0 px-4 py-2 rounded-lg text-xs font-medium transition-all whitespace-nowrap ${
               tab === t.id ? 'bg-[#00D4FF]/15 text-[#00D4FF]' : 'text-white/40 hover:text-white'
             }`}>
             {t.label}
@@ -302,6 +311,63 @@ export default function SiteSettings() {
               <div>• <strong className="text-white/50">Network error / DNS?</strong> HuggingFace might be blocked on your browser/network. Try a VPN.</div>
               <div>• <strong className="text-white/50">503 loading?</strong> Normal on free tier cold start — wait 30s and retry.</div>
               <div>• <strong className="text-white/50">401 / 403?</strong> Token is wrong or expired — get a new one from the link above.</div>
+            </div>
+          </motion.div>
+        )}
+
+        {tab === 'email' && (
+          <motion.div key="email" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="border border-white/8 rounded-xl p-6 bg-white/2 grid gap-4">
+            <div className="flex items-center gap-2 border-b border-white/8 pb-3">
+              <Server size={14} className="text-[#00D4FF]" />
+              <h3 className="text-white font-semibold text-sm">SMTP Email Configuration</h3>
+            </div>
+            <p className="text-white/40 text-xs">Configure SMTP to send proposal emails reliably. Works with Gmail, Outlook, Zoho, or any SMTP provider.</p>
+
+            <div className="grid sm:grid-cols-2 gap-4">
+              <Input label="SMTP Host" value={settings.smtp_host} onChange={(v) => handleChange('smtp_host', v)} placeholder="smtp.gmail.com" />
+              <div>
+                <label className="block text-xs text-white/50 mb-1.5">Encryption</label>
+                <select value={settings.smtp_encryption} onChange={(e) => handleChange('smtp_encryption', e.target.value)} className={inputCls}>
+                  <option value="tls" className="bg-[#111118]">TLS (port 587) — recommended</option>
+                  <option value="ssl" className="bg-[#111118]">SSL (port 465)</option>
+                  <option value="none" className="bg-[#111118]">None (port 25)</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-4">
+              <Input label="SMTP Port" value={settings.smtp_port} onChange={(v) => handleChange('smtp_port', v)} placeholder="587" />
+              <Input label="SMTP Username" value={settings.smtp_user} onChange={(v) => handleChange('smtp_user', v)} placeholder="you@gmail.com" />
+            </div>
+
+            <div>
+              <label className="block text-xs text-white/50 mb-1.5">SMTP Password</label>
+              <div className="relative">
+                <input
+                  type={showSmtpPass ? 'text' : 'password'}
+                  value={settings.smtp_pass}
+                  onChange={(e) => handleChange('smtp_pass', e.target.value)}
+                  placeholder="App password or SMTP password"
+                  className="w-full px-3.5 py-2.5 pr-10 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#00D4FF]/50 transition-colors"
+                />
+                <button type="button" onClick={() => setShowSmtpPass((p) => !p)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white transition-colors">
+                  {showSmtpPass ? <EyeOff size={15} /> : <Eye size={15} />}
+                </button>
+              </div>
+              <p className="text-white/30 text-xs mt-1.5">For Gmail: use an <strong className="text-white/40">App Password</strong> (not your account password) — create one at myaccount.google.com → Security → App passwords.</p>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-4">
+              <Input label="From Name" value={settings.smtp_from_name} onChange={(v) => handleChange('smtp_from_name', v)} placeholder="xComify" />
+              <Input label="From Email (optional)" value={settings.smtp_from_email} onChange={(v) => handleChange('smtp_from_email', v)} placeholder="Same as SMTP username" />
+            </div>
+
+            <div className="rounded-xl bg-white/3 border border-white/8 p-4 text-xs text-white/40 space-y-1">
+              <div className="text-white/60 font-semibold text-sm mb-2">Quick setup guides</div>
+              <div>• <strong className="text-white/50">Gmail:</strong> Host: smtp.gmail.com | Port: 587 | Encryption: TLS | Use App Password</div>
+              <div>• <strong className="text-white/50">Outlook/Hotmail:</strong> Host: smtp.office365.com | Port: 587 | Encryption: TLS</div>
+              <div>• <strong className="text-white/50">Zoho:</strong> Host: smtp.zoho.com | Port: 587 | Encryption: TLS</div>
             </div>
           </motion.div>
         )}

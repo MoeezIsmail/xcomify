@@ -91,8 +91,31 @@ export default function ApplicationsManager() {
     setAnalyzing(true)
     setAnalysis(null)
     try {
-      const systemPrompt = 'You are a senior HR analyst at xComify, a premium eCommerce management agency. Evaluate job applications concisely and professionally.'
-      const userPrompt   = `Analyze this job application for an eCommerce role.\n\nHiring Criteria:\n- Required Skills: ${criteria.required_skills}\n- Min Experience: ${criteria.min_experience}\n- Preferred Platforms: ${criteria.preferred_platforms}\n- Scoring Focus: ${criteria.scoring_focus}\n\nApplicant:\nName: ${selected.full_name}\nSkills: ${selected.skills || 'Not specified'}\nExperience: ${selected.experience || 'Not specified'}\nCity: ${selected.city || 'Not specified'}\nExpected Salary: ${selected.expected_salary || 'Not specified'}\nCover Letter: ${(selected.cover_letter || '').substring(0, 300)}\n\nProvide:\n1. Score: X/10\n2. Key Strengths (2–3 bullet points)\n3. Concerns (1–2 bullet points)\n4. Recommendation: Hire / Review / Reject — one-line reason.`
+      const systemPrompt = 'You are an HR analyst at xComify. Output plain text only — no markdown, no asterisks, no # headers. No preamble, no closing remarks, no suggestions. Only the structured evaluation below.'
+      const userPrompt   = `Evaluate this candidate for an eCommerce role at xComify.
+
+Hiring criteria: required skills: ${criteria.required_skills} | min experience: ${criteria.min_experience} | platforms: ${criteria.preferred_platforms} | focus: ${criteria.scoring_focus}
+
+Candidate:
+Name: ${selected.full_name}
+Skills: ${selected.skills || 'Not specified'}
+Experience: ${selected.experience || 'Not specified'}
+City: ${selected.city || 'Not specified'}
+Salary: ${selected.expected_salary || 'Not specified'}
+Cover letter: ${(selected.cover_letter || 'None').substring(0, 300)}
+
+Reply using EXACTLY this format, nothing else:
+
+Score: X/10
+
+Strengths:
+• [strength 1]
+• [strength 2]
+
+Concerns:
+• [concern 1]
+
+Decision: [Hire / Review / Reject] — [one sentence reason]`
 
       const result = await callHF(token, systemPrompt, userPrompt, 350, 0.3)
       setAnalysis(result)
@@ -121,7 +144,7 @@ export default function ApplicationsManager() {
   }
 
   return (
-    <div className="flex gap-6 h-full">
+    <div className="flex gap-6">
       {/* List */}
       <div className={`${selected ? 'hidden lg:flex' : 'flex'} flex-col flex-1 min-w-0`}>
         <div className="flex items-center gap-4 mb-6">
@@ -169,14 +192,13 @@ export default function ApplicationsManager() {
         </div>
 
         {/* Table */}
-        <div className="border border-white/8 rounded-xl overflow-hidden bg-white/2 flex-1">
+        <div className="border border-white/8 rounded-xl overflow-x-auto bg-white/2">
           {loading ? (
             <div className="flex items-center justify-center py-16">
               <div className="w-6 h-6 rounded-full border-2 border-[#00D4FF] border-t-transparent animate-spin" />
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
+            <table className="w-full">
                 <thead>
                   <tr className="border-b border-white/8">
                     {['Applicant', 'Skills', 'Salary', 'Date', 'Status', 'Actions'].map((h) => (
@@ -237,7 +259,6 @@ export default function ApplicationsManager() {
                   })}
                 </tbody>
               </table>
-            </div>
           )}
         </div>
       </div>
@@ -247,7 +268,7 @@ export default function ApplicationsManager() {
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="w-full lg:w-96 shrink-0 border border-white/8 rounded-xl bg-white/2 p-5 flex flex-col gap-4 h-fit max-h-[calc(100vh-120px)] overflow-y-auto"
+          className="w-full lg:w-96 shrink-0 border border-white/8 rounded-xl bg-white/2 p-5 flex flex-col gap-4 self-start sticky top-0 max-h-[calc(100vh-104px)] overflow-y-auto"
         >
           <div className="flex items-center justify-between">
             <h3 className="text-white font-semibold text-sm">Application Detail</h3>

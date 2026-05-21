@@ -27,19 +27,13 @@ export default function ChatWidget() {
     setMessages((prev) => [...prev, { role: 'user', text }])
     setLoading(true)
     try {
-      const token = settings.huggingface_token
-      let reply
-      if (token) {
-        reply = await callHF(token, SYSTEM_PROMPT, text, 200, 0.7)
-      } else {
-        const res = await chatAPI.send(text)
-        reply = res.data?.reply
-      }
-      setMessages((prev) => [...prev, { role: 'bot', text: reply || 'I\'m here to help! Please contact our team for detailed assistance.' }])
+      const res = await chatAPI.send(text)
+      const reply = res.data?.reply
+      setMessages((prev) => [...prev, { role: 'bot', text: reply || "I'm here to help! Please contact our team for detailed assistance." }])
     } catch {
       setMessages((prev) => [...prev, {
         role: 'bot',
-        text: 'I\'m having trouble connecting right now. Please try again or contact us directly at hello@xcomify.com',
+        text: "I'm having trouble connecting right now. Please try again or contact us directly at hello@xcomify.com",
       }])
     } finally {
       setLoading(false)

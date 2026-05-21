@@ -114,7 +114,7 @@ export default function AdvertisementManager() {
           <div className="w-6 h-6 rounded-full border-2 border-[#00D4FF] border-t-transparent animate-spin" />
         </div>
       ) : (
-        <div className="border border-white/8 rounded-xl overflow-hidden bg-white/2">
+        <div className="border border-white/8 rounded-xl overflow-x-auto bg-white/2">
           <table className="w-full">
             <thead>
               <tr className="border-b border-white/8">

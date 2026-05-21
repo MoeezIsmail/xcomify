@@ -2,7 +2,7 @@
 class SettingsController {
     private PDO $db;
 
-    private const SENSITIVE_KEYS = ['huggingface_token', 'access_token'];
+    private const SENSITIVE_KEYS = ['huggingface_token', 'access_token', 'smtp_pass'];
 
     public function __construct(PDO $db) {
         $this->db = $db;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import Lenis from 'lenis'
@@ -94,6 +94,26 @@ function PublicWidgets() {
 }
 
 function AppRoutes() {
+  const location = useLocation()
+  const isAdmin = location.pathname.startsWith('/admin')
+  const rafRef = useRef(null)
+
+  useEffect(() => {
+    if (isAdmin) return
+
+    const lenis = new Lenis({ lerp: 0.08, smoothWheel: true })
+    const raf = (time) => {
+      lenis.raf(time)
+      rafRef.current = requestAnimationFrame(raf)
+    }
+    rafRef.current = requestAnimationFrame(raf)
+
+    return () => {
+      lenis.destroy()
+      cancelAnimationFrame(rafRef.current)
+    }
+  }, [isAdmin])
+
   return (
     <>
       <PublicWidgets />
@@ -161,20 +181,6 @@ export default function App() {
       return
     }
   }, [])
-
-  useEffect(() => {
-    if (!splashDone) return
-
-    const lenis = new Lenis({ lerp: 0.08, smoothWheel: true })
-
-    const raf = (time) => {
-      lenis.raf(time)
-      requestAnimationFrame(raf)
-    }
-    requestAnimationFrame(raf)
-
-    return () => lenis.destroy()
-  }, [splashDone])
 
   const handleSplashComplete = () => {
     sessionStorage.setItem('splash_shown', '1')

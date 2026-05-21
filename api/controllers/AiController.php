@@ -37,8 +37,9 @@ class AiController {
 
         $criteria = $this->getCriteria();
 
-        $system = "You are a senior HR analyst at xComify, a premium eCommerce management agency. Evaluate job applications concisely.";
-        $user   = "Analyze this job application for an eCommerce role.\n\nHiring Criteria:\n- Required Skills: {$criteria['required_skills']}\n- Min Experience: {$criteria['min_experience']}\n- Preferred Platforms: {$criteria['preferred_platforms']}\n- Scoring Focus: {$criteria['scoring_focus']}\n\nApplicant Details:\nName: {$app['full_name']}\nSkills: {$app['skills']}\nExperience: {$app['experience']}\nCity: {$app['city']}\nExpected Salary: {$app['expected_salary']}\nCover Letter: " . substr($app['cover_letter'] ?? '', 0, 300) . "\n\nProvide a structured response with:\n1. Score: X/10\n2. Key Strengths (2-3 bullet points)\n3. Concerns (1-2 bullet points)\n4. Recommendation: Hire / Review / Reject — with a one-line reason.";
+        $system = "You are an HR analyst at xComify. Output plain text only — no markdown, no asterisks, no # headers. No preamble, no closing remarks, no suggestions. Only the structured evaluation.";
+        $coverSnippet = substr($app['cover_letter'] ?? 'None', 0, 300);
+        $user   = "Evaluate this candidate for an eCommerce role at xComify.\n\nHiring criteria: required skills: {$criteria['required_skills']} | min experience: {$criteria['min_experience']} | platforms: {$criteria['preferred_platforms']} | focus: {$criteria['scoring_focus']}\n\nCandidate:\nName: {$app['full_name']}\nSkills: {$app['skills']}\nExperience: {$app['experience']}\nCity: {$app['city']}\nSalary: {$app['expected_salary']}\nCover letter: {$coverSnippet}\n\nReply using EXACTLY this format, nothing else:\n\nScore: X/10\n\nStrengths:\n• [strength 1]\n• [strength 2]\n\nConcerns:\n• [concern 1]\n\nDecision: [Hire / Review / Reject] — [one sentence reason]";
 
         try {
             $analysis = $this->ai->chat($system, $user, 350, 0.3);

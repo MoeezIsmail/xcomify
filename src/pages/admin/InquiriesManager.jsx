@@ -103,7 +103,7 @@ export default function InquiriesManager() {
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="w-80 shrink-0 border border-white/8 rounded-xl bg-white/2 p-5 h-fit"
+          className="w-80 shrink-0 border border-white/8 rounded-xl bg-white/2 p-5 sticky top-0 max-h-[calc(100vh-104px)] overflow-y-auto"
         >
           <h3 className="text-white font-semibold text-sm mb-4">Inquiry Detail</h3>
           <div className="flex items-center gap-3 mb-5">

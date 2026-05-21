@@ -36,7 +36,7 @@ export default function AdminLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-[#07070C] flex">
+    <div className="h-screen overflow-hidden bg-[#07070C] flex">
       {/* Sidebar */}
       <AnimatePresence>
         {sidebarOpen && (

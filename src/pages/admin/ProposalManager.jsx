@@ -38,8 +38,43 @@ export default function ProposalManager() {
     setGenerating(true)
     setProposal('')
     try {
-      const systemPrompt = 'You are a senior business development manager at xComify, a premium eCommerce management agency. Write professional, persuasive business proposals.'
-      const userPrompt   = `Write a complete business proposal for client '${clientName}' for ${serviceType} services on ${platform}. Budget: ${budget || 'to be discussed'}. Client requirements: ${requirements || 'not specified'}.\n\nInclude these sections:\n1. Executive Summary\n2. Our Approach\n3. Key Deliverables (4 bullet points)\n4. Timeline (3–4 phases)\n5. Investment & Expected ROI\n6. Why Choose xComify\n\nTone: professional, confident, results-focused. Length: ~400 words.`
+      const systemPrompt = 'You are a business development manager at xComify. Write the proposal directly — no preamble like "Here is a proposal", no closing AI remarks. Plain text only, no markdown, no asterisks, no # symbols.'
+      const userPrompt   = `Write a business proposal for this client:
+Client: ${clientName}
+Service: ${serviceType}
+Platform: ${platform}
+Budget: ${budget || 'to be discussed'}
+Notes: ${requirements || 'none'}
+
+Use EXACTLY this structure, no deviations:
+
+Dear ${clientName},
+
+EXECUTIVE SUMMARY
+[2-3 sentences about what xComify will do for this client]
+
+OUR APPROACH
+[2-3 sentences on methodology and process]
+
+KEY DELIVERABLES
+1. [specific deliverable]
+2. [specific deliverable]
+3. [specific deliverable]
+4. [specific deliverable]
+
+TIMELINE
+Phase 1 — [name] ([duration]): [brief description]
+Phase 2 — [name] ([duration]): [brief description]
+Phase 3 — [name] ([duration]): [brief description]
+
+INVESTMENT & EXPECTED ROI
+[2-3 sentences on pricing and measurable outcomes]
+
+WHY CHOOSE XCOMIFY
+[2-3 sentences on competitive advantage and track record]
+
+Best regards,
+xComify Team`
 
       const result = await callHF(token, systemPrompt, userPrompt, 700, 0.7)
       setProposal(result)
@@ -151,7 +186,7 @@ export default function ProposalManager() {
         </div>
 
         {/* Right — Preview + Send */}
-        <div className="border border-white/8 rounded-xl p-6 bg-white/2 flex flex-col gap-4">
+        <div className="border border-white/8 rounded-xl p-6 bg-white/2 flex flex-col gap-4 sticky top-0 max-h-[calc(100vh-104px)] overflow-hidden">
           <div className="flex items-center justify-between border-b border-white/8 pb-3">
             <h3 className="text-white font-semibold text-sm flex items-center gap-2">
               <Mail size={14} className="text-[#00D4FF]" />
@@ -172,7 +207,7 @@ export default function ProposalManager() {
             </div>
           ) : proposal ? (
             <textarea value={proposal} onChange={(e) => setProposal(e.target.value)}
-              className="flex-1 min-h-[300px] px-3.5 py-2.5 rounded-xl bg-white/3 border border-white/8 text-white/80 text-sm focus:outline-none focus:border-[#00D4FF]/30 resize-none leading-relaxed" />
+              className="flex-1 min-h-[180px] px-3.5 py-2.5 rounded-xl bg-white/3 border border-white/8 text-white/80 text-sm focus:outline-none focus:border-[#00D4FF]/30 resize-none leading-relaxed overflow-y-auto" />
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center py-12 gap-3">
               <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center">
@@ -185,7 +220,7 @@ export default function ProposalManager() {
           )}
 
           {proposal && (
-            <div className="border-t border-white/8 pt-4 grid gap-3">
+            <div className="border-t border-white/8 pt-4 grid gap-3 shrink-0">
               <div>
                 <label className={labelCls}>Email Subject</label>
                 <input value={subject} onChange={(e) => setSubject(e.target.value)} className={inputCls} />

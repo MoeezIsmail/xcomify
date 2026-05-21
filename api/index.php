@@ -3,6 +3,7 @@ require_once __DIR__ . '/config/cors.php';
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/middleware/AuthMiddleware.php';
 require_once __DIR__ . '/services/AiService.php';
+require_once __DIR__ . '/services/SmtpMailer.php';
 require_once __DIR__ . '/controllers/AuthController.php';
 require_once __DIR__ . '/controllers/ApplicationController.php';
 require_once __DIR__ . '/controllers/ContactController.php';
