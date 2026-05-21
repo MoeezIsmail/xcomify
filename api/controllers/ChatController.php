@@ -1,9 +1,11 @@
 <?php
 class ChatController {
     private PDO $db;
+    private AiService $ai;
 
     public function __construct(PDO $db) {
         $this->db = $db;
+        $this->ai = new AiService($db);
     }
 
     public function chat(array $body): array {
@@ -13,64 +15,19 @@ class ChatController {
             return ['error' => 'Message required'];
         }
 
-        $hfToken = $this->getHFToken();
+        $system = "You are xComify's helpful AI assistant. xComify is a premium eCommerce agency managing Amazon, Etsy, Shopify, TikTok Shop, Walmart, eBay. Services: Amazon VA, PPC management, product hunting, Shopify development, AI automation. Be concise and professional.";
 
-        // If token is set, try HuggingFace
-        if ($hfToken) {
-            $reply = $this->callHuggingFace($message, $hfToken);
-            if ($reply) {
-                return ['reply' => $reply];
+        try {
+            $reply = $this->ai->chat($system, $message, 200, 0.7);
+            return ['reply' => $reply];
+        } catch (\RuntimeException $e) {
+            $msg = $e->getMessage();
+            if ($msg === 'MODEL_LOADING') {
+                return ['reply' => 'Our AI is warming up — please try again in 20 seconds!'];
             }
+            // Fallback to keyword responses on token/network errors
+            return ['reply' => $this->keywordFallback($message)];
         }
-
-        // Fallback: smart keyword-based responses
-        return ['reply' => $this->keywordFallback($message)];
-    }
-
-    private function callHuggingFace(string $message, string $token): ?string {
-        if (!function_exists('curl_init')) return null;
-
-        $systemCtx = "You are xComify's helpful AI assistant. xComify is a premium eCommerce agency managing Amazon, Etsy, Shopify, TikTok Shop, Walmart, eBay. Services: Amazon VA, PPC management, product hunting, Shopify development, AI automation. Be concise and professional.";
-        $prompt = "<s>[INST] {$systemCtx}\n\nUser: {$message} [/INST]";
-
-        $url = 'https://router.huggingface.co/hf-inference/models/mistralai/Mistral-7B-Instruct-v0.3/v1/chat/completions';
-        $payload = json_encode([
-            'model'       => 'mistralai/Mistral-7B-Instruct-v0.3',
-            'messages'    => [
-                ['role' => 'system', 'content' => "You are xComify's helpful AI assistant. xComify is a premium eCommerce agency managing Amazon, Etsy, Shopify, TikTok Shop, Walmart, eBay. Be concise and professional."],
-                ['role' => 'user',   'content' => $message],
-            ],
-            'max_tokens'  => 200,
-            'temperature' => 0.7,
-            'stream'      => false,
-        ]);
-
-        $ch = curl_init($url);
-        curl_setopt_array($ch, [
-            CURLOPT_POST           => true,
-            CURLOPT_POSTFIELDS     => $payload,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT        => 30,
-            CURLOPT_HTTPHEADER     => [
-                'Content-Type: application/json',
-                "Authorization: Bearer {$token}",
-            ],
-        ]);
-
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        if (!$response || $httpCode !== 200) return null;
-
-        $data = json_decode($response, true);
-        if (isset($data['choices'][0]['message']['content'])) {
-            return trim($data['choices'][0]['message']['content']);
-        }
-        if (isset($data['error']) && strpos($data['error'], 'loading') !== false) {
-            return 'Our AI is warming up — please try again in 20 seconds!';
-        }
-        return null;
     }
 
     private function keywordFallback(string $message): string {
@@ -90,7 +47,7 @@ class ChatController {
              'reply' => "We specialize in Etsy SEO, shop branding, and organic growth. Our clients consistently reach Top 10 rankings. We'd love to help grow your Etsy shop!"],
 
             ['keys' => ['tiktok', 'tiktok shop', 'social'],
-             'reply' => "TikTok Shop is one of the fastest growing platforms! We've launched brands from zero and hit $1M+ in 90 days. Our team handles creator outreach, ads, and fulfillment strategy."],
+             'reply' => "TikTok Shop is one of the fastest growing platforms! We've launched brands from zero and hit \$1M+ in 90 days. Our team handles creator outreach, ads, and fulfillment strategy."],
 
             ['keys' => ['contact', 'reach', 'talk', 'speak', 'call', 'email'],
              'reply' => "You can reach us at hello@xcomify.com, or book a free 30-minute strategy call on our Contact page. We typically respond within 2 hours! 📞"],
@@ -102,7 +59,7 @@ class ChatController {
              'reply' => "We offer: Amazon VA & PPC Management, Shopify Development, Etsy SEO, TikTok Shop Launch, Walmart & eBay Management, Product Hunting, and AI Automation. Which are you interested in?"],
 
             ['keys' => ['result', 'case study', 'portfolio', 'success', 'proof'],
-             'reply' => "Our results speak for themselves: $12M+ revenue generated for clients, 500+ active clients, 97% satisfaction rate. Check our Portfolio page for detailed case studies!"],
+             'reply' => "Our results speak for themselves: \$12M+ revenue generated for clients, 500+ active clients, 97% satisfaction rate. Check our Portfolio page for detailed case studies!"],
 
             ['keys' => ['start', 'begin', 'onboard', 'get started', 'how to start'],
              'reply' => "Getting started is easy! 1️⃣ Book a free strategy call, 2️⃣ We audit your current setup, 3️⃣ Build a custom growth plan, 4️⃣ Execute and scale. Book your call on the Contact page!"],
@@ -117,17 +74,5 @@ class ChatController {
         }
 
         return "Thanks for reaching out! I'd be happy to help you scale your eCommerce business. Could you tell me more about your current platform (Amazon, Shopify, Etsy, etc.) or what you're looking to achieve? 🚀";
-    }
-
-    private function getHFToken(): string {
-        try {
-            // Use compatible query for both SQLite and MySQL
-            $stmt = $this->db->prepare('SELECT value FROM settings WHERE `key` = ?');
-            $stmt->execute(['huggingface_token']);
-            $row = $stmt->fetch();
-            return $row['value'] ?? '';
-        } catch (Exception $e) {
-            return '';
-        }
     }
 }

@@ -5,11 +5,14 @@
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions'
 const GROQ_MODEL = 'llama-3.3-70b-versatile'
 
-// HuggingFace models hosted on their own servers (hf-inference provider)
+const HF_URL = 'https://router.huggingface.co/v1/chat/completions'
+
+// HuggingFace Inference Providers chat models. Use provider policy suffixes instead
+// of forcing /hf-inference/models, because many chat models are not served there.
 const HF_MODELS = [
-  'HuggingFaceH4/zephyr-7b-beta',
-  'meta-llama/Llama-3.2-3B-Instruct',
-  'microsoft/Phi-3.5-mini-instruct',
+  'openai/gpt-oss-120b:fastest',
+  'deepseek-ai/DeepSeek-R1:fastest',
+  'katanemo/Arch-Router-1.5B:hf-inference',
 ]
 
 function getProvider(token) {
@@ -18,12 +21,8 @@ function getProvider(token) {
   return 'huggingface'
 }
 
-function hfUrl(model) {
-  return `https://router.huggingface.co/hf-inference/models/${model}/v1/chat/completions`
-}
-
 export { GROQ_MODEL, HF_MODELS, getProvider }
-export const HF_URL = hfUrl(HF_MODELS[0])
+export { HF_URL }
 
 async function callGroq(token, systemPrompt, userPrompt, maxTokens, temperature) {
   console.log('[AI] Provider: Groq | Model:', GROQ_MODEL)
@@ -59,12 +58,11 @@ async function callGroq(token, systemPrompt, userPrompt, maxTokens, temperature)
 
 async function callHuggingFace(token, systemPrompt, userPrompt, maxTokens, temperature) {
   for (const model of HF_MODELS) {
-    const url = hfUrl(model)
     console.log('[AI] Provider: HuggingFace | Model:', model)
 
     let res, data
     try {
-      res = await fetch(url, {
+      res = await fetch(HF_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({
@@ -79,7 +77,7 @@ async function callHuggingFace(token, systemPrompt, userPrompt, maxTokens, tempe
         }),
       })
     } catch (netErr) {
-      throw new Error(`Network error: ${netErr.message}. Try a VPN or use a Groq token instead.`)
+      throw new Error(`Network error: ${netErr.message}. Try a VPN or use a Groq token instead.`, { cause: netErr })
     }
 
     console.log('[AI] HF HTTP:', res.status)
@@ -144,7 +142,7 @@ export async function testHFConnection(token) {
     } else {
       // Try HF models in order
       for (const model of HF_MODELS) {
-        result.url = hfUrl(model)
+        result.url = HF_URL
         const res = await fetch(result.url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },

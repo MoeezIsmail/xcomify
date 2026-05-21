@@ -1,46 +1,40 @@
 <?php
 class ProposalController {
     private PDO $db;
-    public function __construct(PDO $db) { $this->db = $db; }
+    private AiService $ai;
+
+    public function __construct(PDO $db) {
+        $this->db = $db;
+        $this->ai = new AiService($db);
+    }
 
     public function generate(array $body): array {
-        $client  = $body['client_name']  ?? 'Valued Client';
-        $service = $body['service_type'] ?? 'eCommerce Management';
-        $budget  = $body['budget']       ?? 'to be discussed';
-        $reqs    = $body['requirements'] ?? '';
-        $platform = $body['platform']   ?? 'Amazon';
+        $client   = $body['client_name']  ?? 'Valued Client';
+        $service  = $body['service_type'] ?? 'eCommerce Management';
+        $budget   = $body['budget']       ?? 'to be discussed';
+        $reqs     = $body['requirements'] ?? '';
+        $platform = $body['platform']     ?? 'Amazon';
 
-        $systemCtx = "You are a senior business development manager at xComify, a premium eCommerce management agency. Write professional, persuasive business proposals.";
-        $userMsg   = "Write a complete business proposal for client '{$client}' for {$service} services on {$platform}. Budget: {$budget}. Client requirements: {$reqs}.\n\nInclude these sections:\n1. Executive Summary\n2. Our Approach\n3. Key Deliverables (4 bullet points)\n4. Timeline (3-4 phases)\n5. Investment & Expected ROI\n6. Why Choose xComify\n\nTone: professional, confident, results-focused. Length: ~400 words.";
+        $system = "You are a senior business development manager at xComify, a premium eCommerce management agency. Write professional, persuasive business proposals.";
+        $user   = "Write a complete business proposal for client '{$client}' for {$service} services on {$platform}. Budget: {$budget}. Client requirements: {$reqs}.\n\nInclude these sections:\n1. Executive Summary\n2. Our Approach\n3. Key Deliverables (4 bullet points)\n4. Timeline (3-4 phases)\n5. Investment & Expected ROI\n6. Why Choose xComify\n\nTone: professional, confident, results-focused. Length: ~400 words.";
 
-        $prompt = "<s>[INST] {$systemCtx}\n\n{$userMsg} [/INST]";
-
-        $hfToken = $this->getHFToken();
-        $result  = $this->callHF(
-            'mistralai/Mistral-7B-Instruct-v0.3',
-            ['inputs' => $prompt, 'parameters' => ['max_new_tokens' => 700, 'temperature' => 0.7, 'return_full_text' => false]],
-            $hfToken
-        );
-
-        if (is_array($result) && isset($result[0]['generated_text'])) {
-            return ['proposal' => trim($result[0]['generated_text'])];
-        }
-        if (isset($result['error'])) {
-            if (stripos($result['error'], 'loading') !== false) {
+        try {
+            $text = $this->ai->chat($system, $user, 700, 0.7);
+            return ['proposal' => $text];
+        } catch (\RuntimeException $e) {
+            $msg = $e->getMessage();
+            if ($msg === 'MODEL_LOADING') {
                 return ['proposal' => 'AI model is warming up — please try again in 30 seconds.'];
             }
-            if (stripos($result['error'], 'token') !== false || stripos($result['error'], 'auth') !== false) {
-                return ['proposal' => 'Invalid HuggingFace token. Please update it in Site Settings → AI Integration.'];
-            }
+            return ['proposal' => $msg];
         }
-        return ['proposal' => 'Could not generate proposal. Check your HuggingFace token in Settings → AI Integration.'];
     }
 
     public function sendEmail(array $body): array {
-        $to       = trim($body['to_email']  ?? '');
-        $subject  = trim($body['subject']   ?? 'Business Proposal from xComify');
-        $proposal = $body['proposal']       ?? '';
-        $clientName = $body['client_name']  ?? '';
+        $to         = trim($body['to_email']  ?? '');
+        $subject    = trim($body['subject']   ?? 'Business Proposal from xComify');
+        $proposal   = $body['proposal']       ?? '';
+        $clientName = $body['client_name']    ?? '';
 
         if (!$to || !filter_var($to, FILTER_VALIDATE_EMAIL)) {
             http_response_code(400);
@@ -71,33 +65,5 @@ class ProposalController {
         $sent = mail($to, $subject, $htmlBody, implode("\r\n", $headers));
         if ($sent) return ['message' => "Proposal sent to {$to}"];
         return ['error' => 'Failed to send email. Check server mail configuration.'];
-    }
-
-    private function getHFToken(): string {
-        try {
-            $stmt = $this->db->prepare('SELECT value FROM settings WHERE `key` = ?');
-            $stmt->execute(['huggingface_token']);
-            $row = $stmt->fetch();
-            return $row['value'] ?? '';
-        } catch (\Exception $e) {
-            return '';
-        }
-    }
-
-    private function callHF(string $model, array $payload, string $token): mixed {
-        $ch = curl_init("https://api-inference.huggingface.co/models/{$model}");
-        curl_setopt_array($ch, [
-            CURLOPT_POST           => true,
-            CURLOPT_POSTFIELDS     => json_encode($payload),
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT        => 60,
-            CURLOPT_HTTPHEADER     => [
-                'Content-Type: application/json',
-                "Authorization: Bearer {$token}",
-            ],
-        ]);
-        $r = curl_exec($ch);
-        curl_close($ch);
-        return json_decode($r, true);
     }
 }

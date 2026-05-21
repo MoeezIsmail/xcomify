@@ -2,7 +2,7 @@
 class SettingsController {
     private PDO $db;
 
-    private const SENSITIVE_KEYS = ['huggingface_token'];
+    private const SENSITIVE_KEYS = ['huggingface_token', 'access_token'];
 
     public function __construct(PDO $db) {
         $this->db = $db;
@@ -29,28 +29,19 @@ class SettingsController {
     public function update(array $body): array {
         foreach ($body as $key => $value) {
             $val = is_bool($value) ? ($value ? '1' : '0') : (string)$value;
-            // Try MySQL upsert first
-            try {
-                $this->db->prepare(
-                    'INSERT INTO settings (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?'
-                )->execute([$key, $val, $val]);
-            } catch (\Exception $e) {
-                // SQLite fallback
-                try {
-                    $this->db->prepare(
-                        'INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)'
-                    )->execute([$key, $val]);
-                } catch (\Exception $e2) {
-                    $s = $this->db->prepare('SELECT id FROM settings WHERE key = ?');
-                    $s->execute([$key]);
-                    if ($s->fetch()) {
-                        $this->db->prepare('UPDATE settings SET value = ?, updated_at = CURRENT_TIMESTAMP WHERE key = ?')->execute([$val, $key]);
-                    } else {
-                        $this->db->prepare('INSERT INTO settings (key, value) VALUES (?, ?)')->execute([$key, $val]);
-                    }
-                }
-            }
+            $this->upsertSetting($key, $val);
         }
         return ['message' => 'Settings saved'];
+    }
+
+    private function upsertSetting(string $key, string $value): void {
+        $driver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if ($driver === 'mysql') {
+            $this->db->prepare('INSERT INTO settings (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?')
+                ->execute([$key, $value, $value]);
+        } else {
+            $this->db->prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')
+                ->execute([$key, $value]);
+        }
     }
 }
