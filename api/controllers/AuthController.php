@@ -1,11 +1,9 @@
 <?php
 class AuthController {
-    private PDO $db;
     private AuthMiddleware $auth;
 
-    public function __construct(PDO $db) {
-        $this->db   = $db;
-        $this->auth = new AuthMiddleware($db);
+    public function __construct() {
+        $this->auth = new AuthMiddleware();
     }
 
     public function login(array $body): array {
@@ -17,9 +15,7 @@ class AuthController {
             return ['error' => 'Email and password are required'];
         }
 
-        $stmt = $this->db->prepare('SELECT * FROM users WHERE email = ?');
-        $stmt->execute([$email]);
-        $user = $stmt->fetch();
+        $user = R::getRow('SELECT * FROM users WHERE email = ?', [$email]);
 
         if (!$user || !password_verify($password, $user['password'])) {
             http_response_code(401);

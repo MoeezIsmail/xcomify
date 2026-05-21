@@ -27,9 +27,9 @@ $method = $_SERVER['REQUEST_METHOD'];
 $uri = preg_replace('#^/api#', '', $uri);
 $uri = rtrim($uri, '/');
 
-// Route dispatch
-$db   = Database::getInstance()->getConnection();
-$auth = new AuthMiddleware($db);
+// Bootstrap database
+Database::setup();
+$auth = new AuthMiddleware();
 
 // Helper to send JSON response
 function respond(int $code, $data): void {
@@ -56,13 +56,13 @@ try {
     switch ($resource) {
 
         case 'auth':
-            $ctrl = new AuthController($db);
+            $ctrl = new AuthController();
             if ($action === 'login' && $method === 'POST')  respond(200, $ctrl->login(requestBody()));
             if ($action === 'me'    && $method === 'GET')   respond(200, $ctrl->me($auth->requireAuth()));
             respond(404, ['error' => 'Not found']);
 
         case 'applications':
-            $ctrl = new ApplicationController($db);
+            $ctrl = new ApplicationController();
             if ($method === 'POST' && !$id)           respond(201, $ctrl->create());
             $auth->requireAuth(); // protect remaining
             if ($method === 'GET' && !$id)            respond(200, $ctrl->getAll());
@@ -72,12 +72,12 @@ try {
             respond(404, ['error' => 'Not found']);
 
         case 'contact':
-            $ctrl = new ContactController($db);
+            $ctrl = new ContactController();
             if ($method === 'POST')                   respond(201, $ctrl->create(requestBody()));
             respond(404, ['error' => 'Not found']);
 
         case 'contacts':
-            $ctrl = new ContactController($db);
+            $ctrl = new ContactController();
             $auth->requireAuth();
             if ($method === 'GET' && !$id)            respond(200, $ctrl->getAll());
             if ($method === 'DELETE' && $id)          respond(200, $ctrl->delete($id));
@@ -85,7 +85,7 @@ try {
             respond(404, ['error' => 'Not found']);
 
         case 'blogs':
-            $ctrl = new BlogController($db);
+            $ctrl = new BlogController();
             if ($method === 'GET' && !$id && !$action) respond(200, $ctrl->getAll());
             if ($method === 'GET' && $action)          respond(200, $ctrl->getBySlug($action));
             $auth->requireAuth();
@@ -95,7 +95,7 @@ try {
             respond(404, ['error' => 'Not found']);
 
         case 'services':
-            $ctrl = new ServicesController($db);
+            $ctrl = new ServicesController();
             if ($method === 'GET')                    respond(200, $ctrl->getAll());
             $auth->requireAuth();
             if ($method === 'POST')                   respond(201, $ctrl->create(requestBody()));
@@ -104,7 +104,7 @@ try {
             respond(404, ['error' => 'Not found']);
 
         case 'team':
-            $ctrl = new TeamController($db);
+            $ctrl = new TeamController();
             if ($method === 'GET')                    respond(200, $ctrl->getAll());
             $auth->requireAuth();
             if ($method === 'POST')                   respond(201, $ctrl->create(requestBody()));
@@ -113,7 +113,7 @@ try {
             respond(404, ['error' => 'Not found']);
 
         case 'portfolio':
-            $ctrl = new PortfolioController($db);
+            $ctrl = new PortfolioController();
             if ($method === 'GET')                    respond(200, $ctrl->getAll());
             $auth->requireAuth();
             if ($method === 'POST')                   respond(201, $ctrl->create(requestBody()));
@@ -122,7 +122,7 @@ try {
             respond(404, ['error' => 'Not found']);
 
         case 'testimonials':
-            $ctrl = new TestimonialController($db);
+            $ctrl = new TestimonialController();
             if ($method === 'GET')                    respond(200, $ctrl->getAll());
             $auth->requireAuth();
             if ($method === 'POST')                   respond(201, $ctrl->create(requestBody()));
@@ -131,7 +131,7 @@ try {
             respond(404, ['error' => 'Not found']);
 
         case 'settings':
-            $ctrl = new SettingsController($db);
+            $ctrl = new SettingsController();
             if ($method === 'GET') {
                 $user = $auth->optionalAuth();
                 respond(200, $user ? $ctrl->get() : $ctrl->getPublic());
@@ -141,7 +141,7 @@ try {
             respond(404, ['error' => 'Not found']);
 
         case 'media':
-            $ctrl = new MediaController($db);
+            $ctrl = new MediaController();
             $auth->requireAuth();
             if ($method === 'POST' && $action === 'upload') respond(201, $ctrl->upload());
             if ($method === 'GET')                    respond(200, $ctrl->getAll());
@@ -149,7 +149,7 @@ try {
             respond(404, ['error' => 'Not found']);
 
         case 'ai':
-            $ctrl = new AiController($db);
+            $ctrl = new AiController();
             if ($method === 'GET' && $action === 'criteria') respond(200, $ctrl->getCriteria());
             // /ai/analyze/{id} — segments[1]='analyze', segments[2]=id
             if ($method === 'POST' && ($segments[1] ?? '') === 'analyze' && isset($segments[2]) && is_numeric($segments[2]))
@@ -159,19 +159,19 @@ try {
             respond(404, ['error' => 'Not found']);
 
         case 'chat':
-            $ctrl = new ChatController($db);
+            $ctrl = new ChatController();
             if ($method === 'POST') respond(200, $ctrl->chat(requestBody()));
             respond(404, ['error' => 'Not found']);
 
         case 'proposals':
-            $ctrl = new ProposalController($db);
+            $ctrl = new ProposalController();
             $auth->requireAuth();
             if ($method === 'POST' && $action === 'generate') respond(200, $ctrl->generate(requestBody()));
             if ($method === 'POST' && $action === 'send')     respond(200, $ctrl->sendEmail(requestBody()));
             respond(404, ['error' => 'Not found']);
 
         case 'advertisements':
-            $ctrl = new AdvertisementController($db);
+            $ctrl = new AdvertisementController();
             if ($method === 'GET' && $action === 'active') respond(200, $ctrl->getActive());
             $auth->requireAuth();
             if ($method === 'GET')           respond(200, $ctrl->getAll());

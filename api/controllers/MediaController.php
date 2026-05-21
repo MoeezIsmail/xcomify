@@ -1,10 +1,8 @@
 <?php
 class MediaController {
-    private PDO $db;
     private string $uploadDir;
 
-    public function __construct(PDO $db) {
-        $this->db        = $db;
+    public function __construct() {
         $this->uploadDir = __DIR__ . '/../uploads/';
     }
 
@@ -15,7 +13,7 @@ class MediaController {
         }
 
         $file    = $_FILES['file'];
-        $allowed = ['image/jpeg','image/png','image/gif','image/webp','video/mp4','application/pdf'];
+        $allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'application/pdf'];
 
         if (!in_array($file['type'], $allowed)) {
             http_response_code(400);
@@ -36,25 +34,28 @@ class MediaController {
             return ['error' => 'Upload failed'];
         }
 
-        $stmt = $this->db->prepare('INSERT INTO media (filename, original_name, mime_type, size, path) VALUES (?,?,?,?,?)');
-        $stmt->execute([$filename, $file['name'], $file['type'], $file['size'], '/api/uploads/' . $filename]);
+        $bean                = R::dispense('media');
+        $bean->filename      = $filename;
+        $bean->original_name = $file['name'];
+        $bean->mime_type     = $file['type'];
+        $bean->size          = $file['size'];
+        $bean->path          = '/api/uploads/' . $filename;
+        $id = R::store($bean);
 
-        return ['id' => (int)$this->db->lastInsertId(), 'path' => '/api/uploads/' . $filename, 'filename' => $filename];
+        return ['id' => (int)$id, 'path' => '/api/uploads/' . $filename, 'filename' => $filename];
     }
 
     public function getAll(): array {
-        $stmt = $this->db->query('SELECT * FROM media ORDER BY created_at DESC');
-        return ['data' => $stmt->fetchAll()];
+        $data = R::getAll('SELECT * FROM media ORDER BY created_at DESC');
+        return ['data' => $data];
     }
 
     public function delete(int $id): array {
-        $stmt = $this->db->prepare('SELECT * FROM media WHERE id = ?');
-        $stmt->execute([$id]);
-        $media = $stmt->fetch();
+        $media = R::getRow('SELECT * FROM media WHERE id = ?', [$id]);
         if ($media) {
             $filePath = $this->uploadDir . $media['filename'];
             if (file_exists($filePath)) unlink($filePath);
-            $this->db->prepare('DELETE FROM media WHERE id = ?')->execute([$id]);
+            R::exec('DELETE FROM media WHERE id = ?', [$id]);
         }
         return ['message' => 'Deleted'];
     }

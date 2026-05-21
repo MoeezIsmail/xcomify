@@ -5,7 +5,7 @@ import { servicesAPI } from '../../lib/api'
 import toast from 'react-hot-toast'
 
 const emptyService = {
-  title: '', slug: '', icon: '🛒', short_desc: '', features: '', color: '#00D4FF', sort_order: 0,
+  title: '', slug: '', icon: '🛒', short_desc: '', features: '', color: '#00D4FF', sort_order: 0, is_active: 1,
 }
 
 export default function ServicesManager() {
@@ -140,6 +140,9 @@ export default function ServicesManager() {
               <div className="flex items-center gap-2 mt-3">
                 <div className="w-3 h-3 rounded-full" style={{ background: service.color || '#00D4FF' }} />
                 <span className="text-white/30 text-xs">Order: {service.sort_order || 0}</span>
+                {!parseInt(service.is_active) && (
+                  <span className="ml-auto text-xs px-2 py-0.5 rounded-full bg-white/5 text-white/30">Inactive</span>
+                )}
               </div>
             </motion.div>
           ))}
@@ -208,6 +211,17 @@ export default function ServicesManager() {
                     <input type="number" value={form.sort_order} onChange={(e) => setForm((p) => ({ ...p, sort_order: e.target.value }))}
                       className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#00D4FF]/50" />
                   </div>
+                </div>
+
+                <div className="flex items-center justify-between px-1">
+                  <div>
+                    <div className="text-white text-sm font-medium">Active</div>
+                    <div className="text-white/30 text-xs">Visible in admin listing</div>
+                  </div>
+                  <button type="button" onClick={() => setForm((p) => ({ ...p, is_active: p.is_active ? 0 : 1 }))}
+                    className={`w-11 h-6 rounded-full transition-all relative ${form.is_active ? 'bg-[#00D4FF]' : 'bg-white/15'}`}>
+                    <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all ${form.is_active ? 'left-5' : 'left-0.5'}`} />
+                  </button>
                 </div>
 
                 <div className="flex justify-end gap-3 pt-2">

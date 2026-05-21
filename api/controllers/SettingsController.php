@@ -1,16 +1,11 @@
 <?php
 class SettingsController {
-    private PDO $db;
-
     private const SENSITIVE_KEYS = ['huggingface_token', 'access_token', 'smtp_pass'];
 
-    public function __construct(PDO $db) {
-        $this->db = $db;
-    }
+    public function __construct() {}
 
     public function get(): array {
-        $stmt = $this->db->query('SELECT * FROM settings');
-        $rows = $stmt->fetchAll();
+        $rows   = R::getAll('SELECT * FROM settings');
         $result = [];
         foreach ($rows as $row) {
             $result[$row['key']] = $row['value'];
@@ -35,13 +30,9 @@ class SettingsController {
     }
 
     private function upsertSetting(string $key, string $value): void {
-        $driver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
-        if ($driver === 'mysql') {
-            $this->db->prepare('INSERT INTO settings (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?')
-                ->execute([$key, $value, $value]);
-        } else {
-            $this->db->prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')
-                ->execute([$key, $value]);
-        }
+        $bean = R::findOne('settings', '`key` = ?', [$key]) ?? R::dispense('settings');
+        $bean->key   = $key;
+        $bean->value = $value;
+        R::store($bean);
     }
 }

@@ -1,7 +1,5 @@
 <?php
 class AiService {
-    private PDO $db;
-
     private const GROQ_URL   = 'https://api.groq.com/openai/v1/chat/completions';
     private const GROQ_MODEL = 'llama-3.3-70b-versatile';
 
@@ -27,18 +25,14 @@ class AiService {
         'katanemo/Arch-Router-1.5B:hf-inference',
     ];
 
-    public function __construct(PDO $db) {
-        $this->db = $db;
-    }
+    public function __construct() {}
 
     // ─── Token ───────────────────────────────────────────────────────────────
 
     public function getToken(): string {
         try {
-            $stmt = $this->db->prepare('SELECT value FROM settings WHERE `key` = ?');
-            $stmt->execute(['huggingface_token']);
-            $row = $stmt->fetch();
-            return $row ? ($row['value'] ?? '') : '';
+            $val = R::getCell('SELECT value FROM settings WHERE `key` = ?', ['huggingface_token']);
+            return $val ?: '';
         } catch (\Exception $e) {
             return '';
         }

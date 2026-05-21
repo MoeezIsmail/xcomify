@@ -1,11 +1,9 @@
 <?php
 class ProposalController {
-    private PDO $db;
     private AiService $ai;
 
-    public function __construct(PDO $db) {
-        $this->db = $db;
-        $this->ai = new AiService($db);
+    public function __construct() {
+        $this->ai = new AiService();
     }
 
     public function generate(array $body): array {
@@ -31,9 +29,9 @@ class ProposalController {
     }
 
     public function sendEmail(array $body): array {
-        $to         = trim($body['to_email']  ?? '');
-        $subject    = trim($body['subject']   ?? 'Business Proposal from xComify');
-        $proposal   = $body['proposal']       ?? '';
+        $to       = trim($body['to_email'] ?? '');
+        $subject  = trim($body['subject']  ?? 'Business Proposal from xComify');
+        $proposal = $body['proposal']      ?? '';
 
         if (!$to || !filter_var($to, FILTER_VALIDATE_EMAIL)) {
             http_response_code(400);
@@ -77,11 +75,8 @@ class ProposalController {
     private function getSmtpConfig(): array {
         $keys = ['smtp_host', 'smtp_port', 'smtp_encryption', 'smtp_user', 'smtp_pass', 'smtp_from_name', 'smtp_from_email'];
         $cfg  = [];
-        $stmt = $this->db->prepare('SELECT value FROM settings WHERE `key` = ?');
         foreach ($keys as $k) {
-            $stmt->execute([$k]);
-            $row = $stmt->fetch();
-            $cfg[$k] = $row ? $row['value'] : '';
+            $cfg[$k] = R::getCell('SELECT value FROM settings WHERE `key` = ?', [$k]) ?: '';
         }
         return $cfg;
     }

@@ -1,10 +1,6 @@
 <?php
 class BlogController {
-    private PDO $db;
-
-    public function __construct(PDO $db) {
-        $this->db = $db;
-    }
+    public function __construct() {}
 
     public function getAll(): array {
         $status = $_GET['status'] ?? 'published';
@@ -12,31 +8,22 @@ class BlogController {
         $limit  = min(50, (int)($_GET['limit'] ?? 10));
         $offset = ($page - 1) * $limit;
 
-        $where  = $status === 'all' ? '1=1' : 'status = ?';
-        $params = $status === 'all' ? [$limit, $offset] : [$status, $limit, $offset];
-
-        $stmt = $this->db->prepare("SELECT * FROM blogs WHERE $where ORDER BY created_at DESC LIMIT ? OFFSET ?");
-        $stmt->execute($params);
-        $data = $stmt->fetchAll();
-
         if ($status === 'all') {
-            $total = (int)$this->db->query('SELECT COUNT(*) FROM blogs')->fetchColumn();
+            $data  = R::getAll('SELECT * FROM blogs ORDER BY created_at DESC LIMIT ? OFFSET ?', [$limit, $offset]);
+            $total = (int) R::getCell('SELECT COUNT(*) FROM blogs');
         } else {
-            $cs = $this->db->prepare('SELECT COUNT(*) FROM blogs WHERE status = ?');
-            $cs->execute([$status]);
-            $total = (int)$cs->fetchColumn();
+            $data  = R::getAll('SELECT * FROM blogs WHERE status = ? ORDER BY created_at DESC LIMIT ? OFFSET ?', [$status, $limit, $offset]);
+            $total = (int) R::getCell('SELECT COUNT(*) FROM blogs WHERE status = ?', [$status]);
         }
 
         return compact('data', 'total', 'page', 'limit');
     }
 
     public function getBySlug(string $slug): array {
-        $stmt = $this->db->prepare('SELECT * FROM blogs WHERE slug = ? AND status = ?');
-        $stmt->execute([$slug, 'published']);
-        $blog = $stmt->fetch();
+        $blog = R::getRow('SELECT * FROM blogs WHERE slug = ? AND status = ?', [$slug, 'published']);
         if (!$blog) { http_response_code(404); return ['error' => 'Not found']; }
         // Increment views
-        $this->db->prepare('UPDATE blogs SET views = views + 1 WHERE id = ?')->execute([$blog['id']]);
+        R::exec('UPDATE blogs SET views = views + 1 WHERE id = ?', [$blog['id']]);
         return $blog;
     }
 
@@ -45,13 +32,19 @@ class BlogController {
         if (!$title) { http_response_code(400); return ['error' => 'Title is required']; }
 
         $slug = $body['slug'] ?? $this->makeSlug($title);
-        $stmt = $this->db->prepare('
-            INSERT INTO blogs (title, slug, excerpt, content, category, author, tags, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ');
-        $stmt->execute([$title, $slug, $body['excerpt'] ?? '', $body['content'] ?? '', $body['category'] ?? '', $body['author'] ?? 'Admin', $body['tags'] ?? '', $body['status'] ?? 'draft']);
 
-        return ['id' => (int)$this->db->lastInsertId(), 'message' => 'Blog post created'];
+        $bean = R::dispense('blogs');
+        $bean->title    = $title;
+        $bean->slug     = $slug;
+        $bean->excerpt  = $body['excerpt']  ?? '';
+        $bean->content  = $body['content']  ?? '';
+        $bean->category = $body['category'] ?? '';
+        $bean->author   = $body['author']   ?? 'Admin';
+        $bean->tags     = $body['tags']     ?? '';
+        $bean->status   = $body['status']   ?? 'draft';
+        $id = R::store($bean);
+
+        return ['id' => (int)$id, 'message' => 'Blog post created'];
     }
 
     public function update(int $id, array $body): array {
@@ -62,12 +55,12 @@ class BlogController {
         }
         if (empty($sets)) { http_response_code(400); return ['error' => 'Nothing to update']; }
         $params[] = $id;
-        $this->db->prepare('UPDATE blogs SET ' . implode(', ', $sets) . ', updated_at = CURRENT_TIMESTAMP WHERE id = ?')->execute($params);
+        R::exec('UPDATE blogs SET ' . implode(', ', $sets) . ', updated_at = CURRENT_TIMESTAMP WHERE id = ?', $params);
         return ['message' => 'Updated'];
     }
 
     public function delete(int $id): array {
-        $this->db->prepare('DELETE FROM blogs WHERE id = ?')->execute([$id]);
+        R::exec('DELETE FROM blogs WHERE id = ?', [$id]);
         return ['message' => 'Deleted'];
     }
 

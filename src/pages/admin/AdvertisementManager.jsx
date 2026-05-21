@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Edit, Trash2, Search, X, Save, Megaphone, CheckCircle, XCircle } from 'lucide-react'
+import { Plus, Edit, Trash2, Search, X, Save, Megaphone, CheckCircle, XCircle, Link, Globe } from 'lucide-react'
 import { advertisementAPI } from '../../lib/api'
 import toast from 'react-hot-toast'
 
@@ -8,6 +8,19 @@ const emptyAd = {
   title: '', description: '', image_url: '', badge_text: '', cta_text: 'Learn More',
   cta_link: '', bg_color: '#00D4FF', is_active: true, starts_at: '', ends_at: '',
 }
+
+const PAGE_OPTIONS = [
+  { label: 'Home',         path: '/',             emoji: '🏠' },
+  { label: 'Services',     path: '/services',     emoji: '⚡' },
+  { label: 'Portfolio',    path: '/portfolio',    emoji: '📁' },
+  { label: 'Careers',      path: '/careers',      emoji: '💼' },
+  { label: 'Contact',      path: '/contact',      emoji: '📩' },
+  { label: 'About',        path: '/about',        emoji: '👥' },
+  { label: 'Blog',         path: '/blog',         emoji: '📝' },
+  { label: 'Pricing',      path: '/pricing',      emoji: '💰' },
+  { label: 'Testimonials', path: '/testimonials', emoji: '⭐' },
+  { label: 'Team',         path: '/team',         emoji: '🤝' },
+]
 
 export default function AdvertisementManager() {
   const [ads, setAds] = useState([])
@@ -228,17 +241,57 @@ export default function AdvertisementManager() {
                   </div>
                 </div>
 
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs text-white/50 mb-1.5">CTA Button Text</label>
-                    <input value={form.cta_text} onChange={(e) => setForm((p) => ({ ...p, cta_text: e.target.value }))}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#00D4FF]/50" />
+                <div>
+                  <label className="block text-xs text-white/50 mb-1.5">CTA Button Text</label>
+                  <input value={form.cta_text} onChange={(e) => setForm((p) => ({ ...p, cta_text: e.target.value }))}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#00D4FF]/50" />
+                </div>
+
+                <div>
+                  <label className="block text-xs text-white/50 mb-2">Button Destination</label>
+                  <div className="grid grid-cols-5 gap-1.5 mb-2">
+                    {PAGE_OPTIONS.map((p) => {
+                      const active = form.cta_link === p.path
+                      return (
+                        <button
+                          key={p.path}
+                          type="button"
+                          onClick={() => setForm((prev) => ({ ...prev, cta_link: p.path }))}
+                          className="flex flex-col items-center gap-1 px-1 py-2 rounded-xl border text-center transition-all"
+                          style={{
+                            background: active ? '#00D4FF18' : 'rgba(255,255,255,0.03)',
+                            borderColor: active ? '#00D4FF60' : 'rgba(255,255,255,0.08)',
+                          }}
+                        >
+                          <span className="text-base leading-none">{p.emoji}</span>
+                          <span className="text-[10px] font-medium" style={{ color: active ? '#00D4FF' : 'rgba(255,255,255,0.4)' }}>
+                            {p.label}
+                          </span>
+                        </button>
+                      )
+                    })}
                   </div>
-                  <div>
-                    <label className="block text-xs text-white/50 mb-1.5">CTA Link</label>
-                    <input value={form.cta_link} onChange={(e) => setForm((p) => ({ ...p, cta_link: e.target.value }))}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#00D4FF]/50"
-                      placeholder="/contact" />
+
+                  <div className="flex items-center gap-2">
+                    <div className="relative flex-1">
+                      <Globe size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+                      <input
+                        value={form.cta_link}
+                        onChange={(e) => setForm((p) => ({ ...p, cta_link: e.target.value }))}
+                        placeholder="Or type a custom URL..."
+                        className="w-full pl-8 pr-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-[#00D4FF]/50 placeholder-white/20"
+                      />
+                    </div>
+                    {form.cta_link && (
+                      <a
+                        href={form.cta_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white/40 hover:text-white text-xs transition-colors whitespace-nowrap"
+                      >
+                        <Link size={11} /> Preview
+                      </a>
+                    )}
                   </div>
                 </div>
 

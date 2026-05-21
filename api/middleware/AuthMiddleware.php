@@ -1,10 +1,8 @@
 <?php
 class AuthMiddleware {
-    private PDO $db;
     private string $secret;
 
-    public function __construct(PDO $db) {
-        $this->db     = $db;
+    public function __construct() {
         $this->secret = getenv('JWT_SECRET') ?: 'xcomify_jwt_secret_2024_very_long_and_secure';
     }
 
@@ -53,9 +51,8 @@ class AuthMiddleware {
         $data = json_decode(base64url_decode($payload), true);
         if (!$data || (isset($data['exp']) && $data['exp'] < time())) return null;
 
-        $stmt = $this->db->prepare('SELECT id, name, email, role FROM users WHERE id = ?');
-        $stmt->execute([$data['sub']]);
-        return $stmt->fetch() ?: null;
+        $row = R::getRow('SELECT id, name, email, role FROM users WHERE id = ?', [$data['sub']]);
+        return $row ?: null;
     }
 }
 

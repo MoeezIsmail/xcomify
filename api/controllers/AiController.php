@@ -1,17 +1,13 @@
 <?php
 class AiController {
-    private PDO $db;
     private AiService $ai;
 
-    public function __construct(PDO $db) {
-        $this->db = $db;
-        $this->ai = new AiService($db);
+    public function __construct() {
+        $this->ai = new AiService();
     }
 
     public function getCriteria(): array {
-        $stmt = $this->db->prepare('SELECT value FROM settings WHERE `key` = ?');
-        $stmt->execute(['ai_cv_criteria']);
-        $row = $stmt->fetch();
+        $row = R::getRow('SELECT value FROM settings WHERE `key` = ?', ['ai_cv_criteria']);
         $defaults = [
             'required_skills'      => 'Amazon PPC, Shopify, eCommerce, SEO',
             'min_experience'       => '1 year',
@@ -27,9 +23,7 @@ class AiController {
     }
 
     public function analyzeApplication(int $id): array {
-        $stmt = $this->db->prepare('SELECT * FROM applications WHERE id = ?');
-        $stmt->execute([$id]);
-        $app = $stmt->fetch();
+        $app = R::getRow('SELECT * FROM applications WHERE id = ?', [$id]);
         if (!$app) {
             http_response_code(404);
             return ['error' => 'Application not found'];
@@ -54,13 +48,9 @@ class AiController {
     }
 
     private function upsertSetting(string $key, string $value): void {
-        $driver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
-        if ($driver === 'mysql') {
-            $this->db->prepare('INSERT INTO settings (`key`, value) VALUES (?, ?) ON DUPLICATE KEY UPDATE value = ?')
-                ->execute([$key, $value, $value]);
-        } else {
-            $this->db->prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')
-                ->execute([$key, $value]);
-        }
+        $bean = R::findOne('settings', '`key` = ?', [$key]) ?? R::dispense('settings');
+        $bean->key   = $key;
+        $bean->value = $value;
+        R::store($bean);
     }
 }

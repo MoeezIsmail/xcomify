@@ -1,11 +1,9 @@
 <?php
 class ChatController {
-    private PDO $db;
     private AiService $ai;
 
-    public function __construct(PDO $db) {
-        $this->db = $db;
-        $this->ai = new AiService($db);
+    public function __construct() {
+        $this->ai = new AiService();
     }
 
     public function chat(array $body): array {

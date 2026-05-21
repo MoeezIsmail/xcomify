@@ -1,10 +1,6 @@
 <?php
 class ContactController {
-    private PDO $db;
-
-    public function __construct(PDO $db) {
-        $this->db = $db;
-    }
+    public function __construct() {}
 
     public function create(array $body): array {
         $name    = trim($body['name'] ?? '');
@@ -16,11 +12,14 @@ class ContactController {
             return ['error' => 'Name, email, and message are required'];
         }
 
-        $stmt = $this->db->prepare('
-            INSERT INTO contacts (name, email, phone, company, platform, message)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ');
-        $stmt->execute([$name, $email, $body['phone'] ?? null, $body['company'] ?? null, $body['platform'] ?? null, $message]);
+        $bean = R::dispense('contacts');
+        $bean->name     = $name;
+        $bean->email    = $email;
+        $bean->phone    = $body['phone'] ?? null;
+        $bean->company  = $body['company'] ?? null;
+        $bean->platform = $body['platform'] ?? null;
+        $bean->message  = $message;
+        R::store($bean);
 
         return ['message' => 'Message sent successfully'];
     }
@@ -30,21 +29,18 @@ class ContactController {
         $limit  = min(50, (int)($_GET['limit'] ?? 20));
         $offset = ($page - 1) * $limit;
 
-        $stmt = $this->db->prepare('SELECT * FROM contacts ORDER BY created_at DESC LIMIT ? OFFSET ?');
-        $stmt->execute([$limit, $offset]);
-        $data = $stmt->fetchAll();
-
-        $total = (int)$this->db->query('SELECT COUNT(*) FROM contacts')->fetchColumn();
+        $data  = R::getAll('SELECT * FROM contacts ORDER BY created_at DESC LIMIT ? OFFSET ?', [$limit, $offset]);
+        $total = (int) R::getCell('SELECT COUNT(*) FROM contacts');
         return compact('data', 'total', 'page', 'limit');
     }
 
     public function delete(int $id): array {
-        $this->db->prepare('DELETE FROM contacts WHERE id = ?')->execute([$id]);
+        R::exec('DELETE FROM contacts WHERE id = ?', [$id]);
         return ['message' => 'Deleted'];
     }
 
     public function markRead(int $id): array {
-        $this->db->prepare('UPDATE contacts SET is_read = 1 WHERE id = ?')->execute([$id]);
+        R::exec('UPDATE contacts SET is_read = 1 WHERE id = ?', [$id]);
         return ['message' => 'Marked as read'];
     }
 }

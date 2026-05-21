@@ -1,10 +1,6 @@
 <?php
 class ApplicationController {
-    private PDO $db;
-
-    public function __construct(PDO $db) {
-        $this->db = $db;
-    }
+    public function __construct() {}
 
     public function getAll(): array {
         $page     = max(1, (int)($_GET['page'] ?? 1));
@@ -23,22 +19,16 @@ class ApplicationController {
         $params[] = $limit;
         $params[] = $offset;
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($params);
-        $data = $stmt->fetchAll();
+        $data = R::getAll($sql, $params);
 
         $countParams = array_slice($params, 0, -2);
-        $countStmt   = $this->db->prepare('SELECT COUNT(*) FROM applications WHERE ' . implode(' AND ', $where));
-        $countStmt->execute($countParams);
-        $total = (int)$countStmt->fetchColumn();
+        $total = (int) R::getCell('SELECT COUNT(*) FROM applications WHERE ' . implode(' AND ', $where), $countParams);
 
         return compact('data', 'total', 'page', 'limit');
     }
 
     public function getOne(int $id): array {
-        $stmt = $this->db->prepare('SELECT * FROM applications WHERE id = ?');
-        $stmt->execute([$id]);
-        $app = $stmt->fetch();
+        $app = R::getRow('SELECT * FROM applications WHERE id = ?', [$id]);
         if (!$app) { http_response_code(404); return ['error' => 'Not found']; }
         return $app;
     }
@@ -74,13 +64,20 @@ class ApplicationController {
         }
         $data['cv_path'] = $cvPath;
 
-        $stmt = $this->db->prepare('
-            INSERT INTO applications (full_name, email, phone, city, skills, experience, portfolio_link, expected_salary, cover_letter, cv_path)
-            VALUES (:full_name, :email, :phone, :city, :skills, :experience, :portfolio_link, :expected_salary, :cover_letter, :cv_path)
-        ');
-        $stmt->execute($data);
+        $bean = R::dispense('applications');
+        $bean->full_name       = $data['full_name'];
+        $bean->email           = $data['email'];
+        $bean->phone           = $data['phone'];
+        $bean->city            = $data['city'];
+        $bean->skills          = $data['skills'];
+        $bean->experience      = $data['experience'];
+        $bean->portfolio_link  = $data['portfolio_link'];
+        $bean->expected_salary = $data['expected_salary'];
+        $bean->cover_letter    = $data['cover_letter'];
+        $bean->cv_path         = $data['cv_path'];
+        $id = R::store($bean);
 
-        return ['id' => (int)$this->db->lastInsertId(), 'message' => 'Application submitted successfully'];
+        return ['id' => (int)$id, 'message' => 'Application submitted successfully'];
     }
 
     public function update(int $id, array $body): array {
@@ -98,14 +95,13 @@ class ApplicationController {
         if (empty($sets)) { http_response_code(400); return ['error' => 'Nothing to update']; }
 
         $params[] = $id;
-        $this->db->prepare('UPDATE applications SET ' . implode(', ', $sets) . ', updated_at = CURRENT_TIMESTAMP WHERE id = ?')
-                  ->execute($params);
+        R::exec('UPDATE applications SET ' . implode(', ', $sets) . ', updated_at = CURRENT_TIMESTAMP WHERE id = ?', $params);
 
         return ['message' => 'Updated successfully'];
     }
 
     public function delete(int $id): array {
-        $this->db->prepare('DELETE FROM applications WHERE id = ?')->execute([$id]);
+        R::exec('DELETE FROM applications WHERE id = ?', [$id]);
         return ['message' => 'Deleted successfully'];
     }
 }

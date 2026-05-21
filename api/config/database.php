@@ -1,81 +1,64 @@
 <?php
-class Database {
-    private static ?Database $instance = null;
-    private PDO $pdo;
+require_once __DIR__ . '/../vendor/autoload.php';
+class_alias('RedBeanPHP\\R', 'R');
 
-    private function __construct() {
-        $cfgFile = __DIR__ . '/db_config.php';
+class Database {
+    private static bool $initialized = false;
+
+    public static function setup(): void {
+        if (self::$initialized) return;
+
+        $cfgFile  = __DIR__ . '/db_config.php';
         $useMySQL = false;
+        $cfg      = [];
 
         if (file_exists($cfgFile)) {
             $cfg = require $cfgFile;
-            // Only use MySQL if real credentials are filled in
-            if (
-                !empty($cfg['host']) &&
-                !empty($cfg['password']) &&
+            if (!empty($cfg['host']) && !empty($cfg['password']) &&
                 strpos($cfg['username'], 'XXXXXXX') === false &&
-                $cfg['password'] !== 'YOUR_DB_PASSWORD'
-            ) {
+                $cfg['password'] !== 'YOUR_DB_PASSWORD') {
                 $useMySQL = true;
             }
         }
 
         if ($useMySQL) {
-            $this->pdo = new PDO(
-                "mysql:host={$cfg['host']};dbname={$cfg['dbname']};charset=utf8mb4",
-                $cfg['username'],
-                $cfg['password'],
-                [
-                    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                    PDO::ATTR_EMULATE_PREPARES   => false,
-                ]
-            );
+            R::setup("mysql:host={$cfg['host']};dbname={$cfg['dbname']};charset=utf8mb4",
+                $cfg['username'], $cfg['password']);
         } else {
-            // Local development: use SQLite
             $dbPath = __DIR__ . '/../database/xcomify.db';
-            $this->pdo = new PDO('sqlite:' . $dbPath, null, null, [
-                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            ]);
-            $this->pdo->exec('PRAGMA foreign_keys = ON;');
+            R::setup('sqlite:' . $dbPath);
+            R::exec('PRAGMA foreign_keys = ON');
         }
 
-        $this->initSchema($useMySQL);
+        self::initSchema($useMySQL);
+
+        if ($useMySQL) R::freeze(true);
+
+        self::$initialized = true;
     }
 
-    public static function getInstance(): Database {
-        if (self::$instance === null) {
-            self::$instance = new Database();
-        }
-        return self::$instance;
-    }
-
-    public function getConnection(): PDO {
-        return $this->pdo;
-    }
-
-    private function initSchema(bool $mysql): void {
+    private static function initSchema(bool $mysql): void {
         if ($mysql) {
-            $this->initMySQL();
+            self::initMySQL();
         } else {
-            $this->initSQLite();
+            self::initSQLite();
         }
 
         // Seed default admin
-        $count = (int)$this->pdo->query('SELECT COUNT(*) FROM users')->fetchColumn();
+        $count = (int) R::getCell('SELECT COUNT(*) FROM users');
         if ($count === 0) {
-            $this->pdo->prepare(
-                'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)'
-            )->execute(['Admin', 'admin@xcomify.com', password_hash('admin123', PASSWORD_BCRYPT), 'admin']);
+            R::exec(
+                'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+                ['Admin', 'admin@xcomify.com', password_hash('admin123', PASSWORD_BCRYPT), 'admin']
+            );
         }
 
-        $this->seedMockData();
+        self::seedMockData();
     }
 
-    private function seedMockData(): void {
+    private static function seedMockData(): void {
         // Services
-        if ((int)$this->pdo->query('SELECT COUNT(*) FROM services')->fetchColumn() === 0) {
+        if ((int) R::getCell('SELECT COUNT(*) FROM services') === 0) {
             $services = [
                 ['Amazon FBA Management', 'amazon-fba-management', 'ShoppingCart', 'End-to-end Amazon FBA management to maximize your sales and profitability.', 'We handle everything from product listing optimization and inventory management to sponsored ads and brand protection on Amazon.', 'Product Listing Optimization,FBA Inventory Management,Sponsored Ads (PPC),Brand Registry & Protection,A+ Content Creation', '#FF6B35', 1],
                 ['Amazon PPC Management', 'amazon-ppc-management', 'Target', 'Data-driven PPC campaigns that reduce ACoS and maximize ROI.', 'Our PPC specialists build and optimize campaigns that convert. We target the right keywords at the right bids to grow your Amazon business profitably.', 'Sponsored Product Campaigns,Sponsored Brand Campaigns,Keyword Research & Bidding,ACoS Optimization,Weekly Performance Reports', '#00D4FF', 2],
@@ -84,12 +67,13 @@ class Database {
                 ['TikTok Shop Setup', 'tiktok-shop-setup', 'Play', 'Launch and scale on the fastest-growing eCommerce platform.', 'We set up and manage your TikTok Shop from scratch — product catalogues, creator partnerships, live selling strategy, and ad campaigns.', 'TikTok Shop Account Setup,Creator & Affiliate Outreach,Live Selling Strategy,TikTok Ads Management,Viral Content Strategy', '#EC4899', 5],
                 ['Product Research & Hunting', 'product-research-hunting', 'Search', 'Data-backed product hunting to find your next winning product.', 'Using advanced tools and market analysis, we identify high-demand, low-competition products with strong profit margins for Amazon, Etsy, or Shopify.', 'Market & Competition Analysis,Profit Margin Calculation,Trend & Demand Research,Supplier Sourcing,Private Label Opportunities', '#10B981', 6],
             ];
-            $stmt = $this->pdo->prepare('INSERT INTO services (title, slug, icon, short_desc, description, features, color, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)');
-            foreach ($services as $s) { $stmt->execute($s); }
+            foreach ($services as $s) {
+                R::exec('INSERT INTO services (title, slug, icon, short_desc, description, features, color, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)', $s);
+            }
         }
 
         // Portfolio
-        if ((int)$this->pdo->query('SELECT COUNT(*) FROM portfolio')->fetchColumn() === 0) {
+        if ((int) R::getCell('SELECT COUNT(*) FROM portfolio') === 0) {
             $portfolio = [
                 ['NatureBloom Organics', 'Amazon', 'Stagnant sales, poor listing quality, high ACoS of 42%', 'Complete listing overhaul with A+ content, PPC restructure with tiered bidding strategy', 'ACoS reduced to 16%, revenue grew 340% in 6 months', '{"revenue": "+340%", "acos": "16%", "timeline": "6 months"}', 'Amazon,PPC,FBA', '#00D4FF', 1],
                 ['CraftHaven Studio', 'Etsy', 'New shop with zero sales and no organic visibility', 'Full Etsy SEO audit, keyword-rich listing rewrites, shop branding refresh', 'Reached 500+ monthly sales within 4 months, Top 1% seller badge', '{"sales": "500+/month", "ranking": "Top 1%", "timeline": "4 months"}', 'Etsy,SEO,Branding', '#7C3AED', 1],
@@ -98,12 +82,13 @@ class Database {
                 ['PureWellness Co.', 'Amazon', 'Launching new supplement line with no brand recognition', 'Full product launch strategy: keyword research, PPC ramp-up, review generation', '500+ reviews in 60 days, reached Best Seller badge in category', '{"reviews": "500+", "rank": "Best Seller", "timeline": "60 days"}', 'Amazon,Launch,Brand Building', '#10B981', 0],
                 ['HomeDecor Luxe', 'Multiple', 'Fragmented multi-channel presence with inconsistent branding', 'Unified brand identity, synchronized inventory across Amazon + Etsy + Shopify', '200% overall revenue growth, 95% reduction in overselling errors', '{"growth": "+200%", "error_reduction": "95%", "channels": "3"}', 'Multi-Channel,Amazon,Etsy,Shopify', '#F59E0B', 0],
             ];
-            $stmt = $this->pdo->prepare('INSERT INTO portfolio (title, category, challenge, solution, result, metrics, tags, color, is_featured, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)');
-            foreach ($portfolio as $p) { $stmt->execute($p); }
+            foreach ($portfolio as $p) {
+                R::exec('INSERT INTO portfolio (title, category, challenge, solution, result, metrics, tags, color, is_featured, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)', $p);
+            }
         }
 
         // Testimonials
-        if ((int)$this->pdo->query('SELECT COUNT(*) FROM testimonials')->fetchColumn() === 0) {
+        if ((int) R::getCell('SELECT COUNT(*) FROM testimonials') === 0) {
             $testimonials = [
                 ['Sarah Mitchell', 'NatureBloom Organics', 'Founder & CEO', 'xComify completely transformed our Amazon business. In just 6 months, our revenue grew by 340% and our ACoS dropped from 42% to 16%. Their PPC expertise is unmatched. Best investment we ever made!', 5, 'Amazon', '+$240K Revenue', 1],
                 ['James Okonkwo', 'TechGadgets Pro', 'E-commerce Director', 'We hit $1M in our first 90 days on TikTok Shop — something we thought was impossible as a new brand. The xComify team built our entire creator network and ad strategy. Absolutely phenomenal results.', 5, 'TikTok Shop', '$1M in 90 days', 1],
@@ -112,12 +97,13 @@ class Database {
                 ['Aisha Patel', 'PureWellness Co.', 'Founder', 'Launching on Amazon felt overwhelming until xComify took over. They got us 500 reviews in 60 days and a Best Seller badge. Our launch was smoother than I ever imagined possible.', 5, 'Amazon', 'Best Seller in 60 days', 1],
                 ['Marcus Thompson', 'HomeDecor Luxe', 'Operations Lead', 'Managing three platforms at once was chaos. xComify built us a unified system and grew our total revenue by 200%. We went from constantly overselling to running like a machine.', 5, 'Multi-Channel', '+200% Revenue', 1],
             ];
-            $stmt = $this->pdo->prepare('INSERT INTO testimonials (name, company, role, content, rating, platform, revenue, is_featured, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)');
-            foreach ($testimonials as $t) { $stmt->execute($t); }
+            foreach ($testimonials as $t) {
+                R::exec('INSERT INTO testimonials (name, company, role, content, rating, platform, revenue, is_featured, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)', $t);
+            }
         }
 
         // Blog posts
-        if ((int)$this->pdo->query('SELECT COUNT(*) FROM blogs')->fetchColumn() === 0) {
+        if ((int) R::getCell('SELECT COUNT(*) FROM blogs') === 0) {
             $blogs = [
                 ['How to Reduce Amazon ACoS Below 20% in 30 Days', 'how-to-reduce-amazon-acos-below-20', 'A step-by-step breakdown of the PPC optimization strategies we use to consistently drive ACoS under 20% for our Amazon clients.', 'High ACoS is the #1 problem we hear from Amazon sellers. In this post we break down the exact five-step framework our PPC team uses to systematically reduce advertising cost of sale without sacrificing top-line revenue...', 'Amazon PPC', 'xComify Team', 'Amazon,PPC,Advertising', 'published', 142],
                 ['The Complete Guide to Etsy SEO in 2024', 'complete-guide-etsy-seo-2024', 'Everything you need to know about Etsy SEO — from keyword research to tag optimization — to rank your listings and drive organic traffic.', 'Etsy SEO is fundamentally different from Google SEO. The algorithm considers listing quality, recency, customer reviews, and conversion rate alongside keywords. Here is how to optimize for all of them...', 'Etsy', 'xComify Team', 'Etsy,SEO,Organic Growth', 'published', 98],
@@ -126,31 +112,34 @@ class Database {
                 ['Product Research in 2024: The 5-Step Framework We Use for Every Client', 'product-research-framework-2024', 'Stop guessing. Here is the repeatable product research process we use to find winning products with proven demand and healthy margins.', 'Product research is where 90% of Amazon sellers fail before they even start. They pick products they love rather than products the market demands. Our five-step framework removes emotion from the equation entirely...', 'Amazon', 'xComify Team', 'Amazon,Product Research,FBA', 'published', 63],
                 ['How We Launched a TikTok Shop Brand to $1M in 90 Days', 'tiktok-shop-1m-90-days-case-study', 'A detailed case study of how our team built a creator affiliate network and scaled a new TikTok Shop brand to $1M revenue in under three months.', 'When TechGadgets Pro came to us in January, they had zero TikTok presence and a 90-day goal that sounded unrealistic. This is the full story of what we did, week by week, to hit $1M...', 'Case Study', 'xComify Team', 'TikTok,Case Study,Launch', 'published', 201],
             ];
-            $stmt = $this->pdo->prepare('INSERT INTO blogs (title, slug, excerpt, content, category, author, tags, status, views) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
-            foreach ($blogs as $b) { $stmt->execute($b); }
+            foreach ($blogs as $b) {
+                R::exec('INSERT INTO blogs (title, slug, excerpt, content, category, author, tags, status, views) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', $b);
+            }
         }
 
         // Team
-        if ((int)$this->pdo->query('SELECT COUNT(*) FROM team')->fetchColumn() === 0) {
+        if ((int) R::getCell('SELECT COUNT(*) FROM team') === 0) {
             $team = [
                 ['Ahmad Raza', 'Founder & CEO', 'Serial entrepreneur with 8+ years in eCommerce. Built and scaled multiple 7-figure Amazon brands before founding xComify in 2018.', '', 'https://linkedin.com/in/ahmad-raza', '', 1],
                 ['Sara Khan', 'Head of Amazon Operations', 'Amazon PPC specialist and FBA expert. Managed $5M+ in annual ad spend with an average ACoS of 17% across client accounts.', '', 'https://linkedin.com/in/sara-khan', '', 2],
                 ['Michael Torres', 'Lead Shopify Developer', 'Full-stack developer specializing in Shopify theme development and conversion optimization. 100+ stores built and optimized.', '', 'https://linkedin.com/in/michael-torres', '', 3],
                 ['Fatima Al-Rashid', 'TikTok & Social Commerce Lead', 'Grew multiple brands to 6-figures on TikTok Shop. Expert in creator partnerships, live selling, and social commerce strategy.', '', 'https://linkedin.com/in/fatima-alrashid', '', 4],
             ];
-            $stmt = $this->pdo->prepare('INSERT INTO team (name, role, bio, image_path, linkedin, twitter, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, 1)');
-            foreach ($team as $t) { $stmt->execute($t); }
+            foreach ($team as $t) {
+                R::exec('INSERT INTO team (name, role, bio, image_path, linkedin, twitter, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, 1)', $t);
+            }
         }
 
         // Sample advertisement
-        if ((int)$this->pdo->query('SELECT COUNT(*) FROM advertisements')->fetchColumn() === 0) {
-            $this->pdo->prepare(
-                'INSERT INTO advertisements (title, description, cta_text, cta_link, bg_color, badge_text, is_active) VALUES (?, ?, ?, ?, ?, ?, 1)'
-            )->execute(['Free Amazon Audit — Limited Spots!', 'Get a free 30-minute Amazon account audit from our experts. We will identify your top 3 revenue leaks and tell you exactly how to fix them.', 'Claim Free Audit', '/contact', '#00D4FF', '🔥 Limited Offer']);
+        if ((int) R::getCell('SELECT COUNT(*) FROM advertisements') === 0) {
+            R::exec(
+                'INSERT INTO advertisements (title, description, cta_text, cta_link, bg_color, badge_text, is_active) VALUES (?, ?, ?, ?, ?, ?, 1)',
+                ['Free Amazon Audit — Limited Spots!', 'Get a free 30-minute Amazon account audit from our experts. We will identify your top 3 revenue leaks and tell you exactly how to fix them.', 'Claim Free Audit', '/contact', '#00D4FF', '🔥 Limited Offer']
+            );
         }
     }
 
-    private function initMySQL(): void {
+    private static function initMySQL(): void {
         $tables = [
             "CREATE TABLE IF NOT EXISTS users (
                 id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -247,18 +236,20 @@ class Database {
         ];
 
         foreach ($tables as $sql) {
-            $this->pdo->exec($sql);
+            R::exec($sql);
         }
     }
 
-    private function initSQLite(): void {
-        $this->pdo->exec("
+    private static function initSQLite(): void {
+        R::exec("
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL, email TEXT UNIQUE NOT NULL,
                 password TEXT NOT NULL, role TEXT NOT NULL DEFAULT 'admin',
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            );
+            )
+        ");
+        R::exec("
             CREATE TABLE IF NOT EXISTS applications (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 full_name TEXT NOT NULL, email TEXT NOT NULL,
@@ -267,14 +258,18 @@ class Database {
                 cv_path TEXT, status TEXT NOT NULL DEFAULT 'pending',
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            );
+            )
+        ");
+        R::exec("
             CREATE TABLE IF NOT EXISTS contacts (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL, email TEXT NOT NULL,
                 phone TEXT, company TEXT, platform TEXT,
                 message TEXT NOT NULL, is_read INTEGER NOT NULL DEFAULT 0,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            );
+            )
+        ");
+        R::exec("
             CREATE TABLE IF NOT EXISTS blogs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title TEXT NOT NULL, slug TEXT UNIQUE NOT NULL,
@@ -283,7 +278,9 @@ class Database {
                 views INTEGER DEFAULT 0,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            );
+            )
+        ");
+        R::exec("
             CREATE TABLE IF NOT EXISTS services (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title TEXT NOT NULL, slug TEXT UNIQUE NOT NULL,
@@ -291,14 +288,18 @@ class Database {
                 features TEXT, color TEXT, sort_order INTEGER DEFAULT 0,
                 is_active INTEGER DEFAULT 1,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            );
+            )
+        ");
+        R::exec("
             CREATE TABLE IF NOT EXISTS team (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL, role TEXT NOT NULL,
                 bio TEXT, image_path TEXT, linkedin TEXT, twitter TEXT,
                 sort_order INTEGER DEFAULT 0, is_active INTEGER DEFAULT 1,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            );
+            )
+        ");
+        R::exec("
             CREATE TABLE IF NOT EXISTS portfolio (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title TEXT NOT NULL, category TEXT,
@@ -306,7 +307,9 @@ class Database {
                 metrics TEXT, tags TEXT, image_path TEXT, color TEXT,
                 is_featured INTEGER DEFAULT 0, is_active INTEGER DEFAULT 1,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            );
+            )
+        ");
+        R::exec("
             CREATE TABLE IF NOT EXISTS testimonials (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL, company TEXT, role TEXT,
@@ -314,18 +317,24 @@ class Database {
                 platform TEXT, revenue TEXT, image_path TEXT,
                 is_featured INTEGER DEFAULT 0, is_active INTEGER DEFAULT 1,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            );
+            )
+        ");
+        R::exec("
             CREATE TABLE IF NOT EXISTS settings (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 key TEXT UNIQUE NOT NULL, value TEXT,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            );
+            )
+        ");
+        R::exec("
             CREATE TABLE IF NOT EXISTS media (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 filename TEXT NOT NULL, original_name TEXT,
                 mime_type TEXT, size INTEGER, path TEXT NOT NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            );
+            )
+        ");
+        R::exec("
             CREATE TABLE IF NOT EXISTS advertisements (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title TEXT NOT NULL, description TEXT,
@@ -334,7 +343,7 @@ class Database {
                 is_active INTEGER DEFAULT 1, starts_at DATETIME, ends_at DATETIME,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            );
+            )
         ");
     }
 }
